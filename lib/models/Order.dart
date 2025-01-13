@@ -26,9 +26,10 @@ class Order {
     this.credit = 0.0,
     required this.paymentMethodId,
     required this.estimatedDate,
-    required this.statusId,
-    required this.createdAt
-  });
+    this.statusId = 1,
+    DateTime? createdAt,
+  }
+  ): createdAt = createdAt ?? DateTime.now();
 
 
   factory Order.fromJson(Map<String, dynamic> json ) => Order(

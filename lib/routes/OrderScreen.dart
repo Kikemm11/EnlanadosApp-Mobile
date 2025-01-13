@@ -1,40 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:enlanados_app_mobile/widgets/widgets.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required this.title}) : super(key: key);
+class OrderScreen extends StatefulWidget {
+  const OrderScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _OrderScreenState createState() => _OrderScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = -1;
+class _OrderScreenState extends State<OrderScreen> {
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-
+    Navigator.pop(context);
     // Navigate to the respective screen based on the selected index
     switch (index) {
       case 0:
         Navigator.pushNamed(context, '/orders', arguments: {"index": _selectedIndex});
-        _selectedIndex = -1;
         break;
       case 1:
         Navigator.pushNamed(context, '/products', arguments: {"index": _selectedIndex});
-        _selectedIndex = -1;
         break;
       case 2:
         Navigator.pushNamed(context, '/wool-stock', arguments: {"index": _selectedIndex});
-        _selectedIndex = -1;
         break;
       case 3:
         Navigator.pushNamed(context, '/statistics', arguments: {"index": _selectedIndex});
-        _selectedIndex = -1;
         break;
     }
   }
@@ -44,46 +40,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.cyan[600],
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset(
-                'lib/assets/logo.png',
-                width: 40,
-                height: 40,
-              ),
-              const SizedBox(width: 8),
-              // Title
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_sharp, color: Colors.white,),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false,);
+            },
           ),
-          centerTitle: false, // This ensures the title is aligned to the left
+          backgroundColor: Colors.cyan[600],
+          title: Text(widget.title,
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
+          ),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Te amo'), // Example display of the selected tab
+            children: const <Widget>[
+              Text('Order Screen Content'),
             ],
           ),
-        ),
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/splash');
-          },
-          child: const Text('Go to Settings'),
         ),
         bottomNavigationBar: EnlanadosNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-        )
+        ),
       ),
     );
   }

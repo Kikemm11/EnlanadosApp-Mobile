@@ -11,8 +11,8 @@ class Product {
   Product({
     this.id,
     required this.name,
-    required this.createdAt
-  });
+    DateTime? createdAt,
+  }): createdAt = createdAt ?? DateTime.now();
 
 
   factory Product.fromJson(Map<String, dynamic> json ) => Product(

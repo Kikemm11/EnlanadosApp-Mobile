@@ -64,14 +64,14 @@ class _SplashScreenState extends State<SplashScreen>
                   Text(
                     'POWERED BY',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
                   ),
                   SizedBox(height: 10), // Space between the two texts
                   Text(
-                    'Tu amorcito<3',
+                    'Tu amorcito 🧡',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,

@@ -14,9 +14,9 @@ class WoolStock {
     this.id,
     required this.color,
     required this.quantity,
-    required this.lastUpdated,
-    required this.createdAt
-  });
+    DateTime? lastUpdated,
+    DateTime? createdAt,
+  }): createdAt = createdAt ?? DateTime.now(), lastUpdated = lastUpdated ?? DateTime.now();
 
 
   factory WoolStock.fromJson(Map<String, dynamic> json ) => WoolStock(
