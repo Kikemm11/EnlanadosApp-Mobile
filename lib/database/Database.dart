@@ -132,25 +132,33 @@ class DBProvider {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           client TEXT NOT NULL,
           city_id INTEGER NOT NULL,
-          product_type_id INTEGER NOT NULL,
-          description TEXT,
-          added_price REAL CHECK(added_price >= 0.0),
           credit REAL CHECK(credit >= 0.0),
           payment_method_id INTEGER NOT NULL,
           estimated_date TEXT NOT NULL,
           status_id INTEGER NOT NULL,
           created_at TEXT,
           FOREIGN KEY (city_id) REFERENCES city(id),
-          FOREIGN KEY (product_type_id) REFERENCES product_type(id),
           FOREIGN KEY (payment_method_id) REFERENCES payment_method(id),
           FOREIGN KEY (status_id) REFERENCES status(id)
+          );
+          ''');
+
+          await db.execute('''
+          CREATE TABLE item (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          order_id INTEGER NOT NULL,
+          product_type_id INTEGER NOT NULL,
+          description TEXT,
+          added_price REAL CHECK(added_price >= 0.0),
+          created_at TEXT,
+          FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
           );
           ''');
 
           await _insertInitialData(db);
 
         },
-        version: 1
+        version: 2
     );
   }
 
@@ -458,8 +466,8 @@ class DBProvider {
     final db = await database;
     final maps = await db!.query(
       'orders',
-      columns: ['id', 'client', 'city_id', 'product_type_id', 'description', 'added_price',
-        'credit', 'payment_method_id', 'estimated_date', 'status_id', 'created_at'],
+      columns: ['id', 'client', 'city_id', 'credit', 'payment_method_id', 'estimated_date',
+        'status_id', 'created_at'],
       where: 'id = ?',
       whereArgs: [order.id],
     );
@@ -527,6 +535,73 @@ class DBProvider {
         'orders',
         where: 'id = ?',
         whereArgs: [order.id]
+    );
+  }
+
+  // Item querys
+
+  // Read methods
+
+  Future<List<Item>> readOrderItems(Order order) async {
+    final db = await database;
+    final result = await db!.query(
+      'item,',
+      where: 'order_id = ?',
+      whereArgs: [order.id],
+      orderBy: 'id ASC',
+    );
+    return result.map((e)=> Item.fromJson(e)).toList();
+  }
+
+  Future<Item> readOneItem(Item item) async {
+    final db = await database;
+    final maps = await db!.query(
+      'item',
+      columns: ['id', 'order_id', 'product_type_id', 'description', 'added_price', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [item.id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Item.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Item not found');
+    }
+  }
+
+  // Insert Method
+
+  Future<Item> insertItem(Item item) async {
+    final db =  await database;
+    int id = await db!.insert('item', item.toJson());
+    item.id = id;
+    return item;
+  }
+
+  // Update Methods
+
+  Future<Item> updateItem(Item item) async {
+    final db =  await database;
+    await db!.update(
+        'item',
+        item.toJson(),
+        where: 'id = ?',
+        whereArgs: [item.id]
+    );
+    return item;
+  }
+
+
+
+  // Delete method
+
+  Future<int> deleteItem(Item item) async {
+    final db = await database;
+    return db!.delete(
+        'item',
+        where: 'id = ?',
+        whereArgs: [item.id]
     );
   }
 
