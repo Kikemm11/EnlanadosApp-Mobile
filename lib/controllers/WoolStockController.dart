@@ -34,13 +34,39 @@ class WoolStockController with ChangeNotifier {
     try {
       await DBProvider.db.insertWoolStock(woolStock);
     } catch(e){
-      return e.toString();
+      if (e.toString().contains('UNIQUE')) {
+        return 'UNIQUE';
+      } else {
+        return e.toString();
+      }
     }
     return await getAllWoolStocks();
   }
 
   Future<String> updateWoolStock(WoolStock woolStock) async {
     try {
+      await DBProvider.db.updateWoolStock(woolStock);
+    } catch(e){
+      return e.toString();
+    }
+    return await getAllWoolStocks();
+  }
+
+  Future<String> incrementWoolStock(WoolStock woolStock) async {
+    try {
+      woolStock.quantity += 1;
+      woolStock.lastUpdated = DateTime.now();
+      await DBProvider.db.updateWoolStock(woolStock);
+    } catch(e){
+      return e.toString();
+    }
+    return await getAllWoolStocks();
+  }
+
+  Future<String> decrementWoolStock(WoolStock woolStock) async {
+    try {
+      woolStock.quantity = woolStock.quantity - 1 < 0 ? 0 : woolStock.quantity - 1;
+      woolStock.lastUpdated = DateTime.now();
       await DBProvider.db.updateWoolStock(woolStock);
     } catch(e){
       return e.toString();

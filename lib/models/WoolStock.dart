@@ -6,7 +6,7 @@ String woolStockMethodToJson(WoolStock data) => json.encode(data.toJson());
 class WoolStock {
   int? id;
   String color;
-  double quantity;
+  int quantity;
   DateTime lastUpdated;
   DateTime createdAt;
 
@@ -22,7 +22,7 @@ class WoolStock {
   factory WoolStock.fromJson(Map<String, dynamic> json ) => WoolStock(
       id: json["id"],
       color: json["color"] as String,
-      quantity: json["quantity"] as double,
+      quantity: json["quantity"] as int,
       lastUpdated: DateTime.parse(json["last_updated"] as String),
       createdAt: DateTime.parse(json["created_at"] as String)
   );
@@ -31,7 +31,7 @@ class WoolStock {
     "id": id,
     "color": color,
     "quantity": quantity,
-    "last_updated": lastUpdated,
+    "last_updated": lastUpdated.toIso8601String(),
     "created_at": createdAt.toIso8601String()
   };
 

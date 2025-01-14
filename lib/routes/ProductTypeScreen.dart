@@ -122,7 +122,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                               child: Card(
                                 margin: EdgeInsets.only(right: 70.0, top: 6.0, bottom: 6.0, left: 70.0),
                                 elevation: 2.0,
-                                color: Colors.amber[50],
+                                color: Colors.yellow[50],
                                 child: ListTile(
                                   contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                                   leading: Icon(Icons.shopping_bag, color: Colors.green[200]),
@@ -140,7 +140,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                                       color: Colors.orange[600],
                                     ),
                                     onPressed: () {
-                                      _showEditProductFormDialog(productType);
+                                      _showEditProductTypeFormDialog(productType);
                                     },
                                   ),
                                 ),
@@ -167,7 +167,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
   }
 
 
-  // Dialog create product
+  // Dialog create ProductType
 
   void _showCreateProductTypeFormDialog(int productId) {
 
@@ -208,7 +208,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                         return 'Introduce un precio, amorcito!';
                       }
                       if (double.tryParse(value)! < 0.0) {
-                        return 'El precio no puede ser negativo!';
+                        return 'El precio no puede ser negativo, cielo!';
                       }
                       return null;
                     },
@@ -271,9 +271,9 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
   }
 
 
-  // Dialog edit Product
+  // Dialog edit Product Type
 
-  void _showEditProductFormDialog(ProductType productType) {
+  void _showEditProductTypeFormDialog(ProductType productType) {
     // Controllers for text fields
     TextEditingController nameController = TextEditingController(text: productType.name);
     TextEditingController priceController = TextEditingController(text: productType.price.toString());
@@ -373,7 +373,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
     );
   }
 
-  // Dialog confirm delete Product
+  // Dialog confirm delete Product Type
 
   Future<bool> _showDeleteConfirmationDialog(ProductType productType) async {
     String productTypeName = productType.name;

@@ -105,7 +105,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                             elevation: 2.0,
-                            color: Colors.amber[50],
+                            color: Colors.yellow[50],
                             child: ListTile(
                               contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                               leading: Icon(Icons.shopping_bag, color: Colors.green[200]),
@@ -188,7 +188,7 @@ class _ProductScreenState extends State<ProductScreen> {
     }
   }
 
-  // Dialog create product
+  // Dialog create Product
 
   void _showCreateProductFormDialog() {
 
@@ -305,7 +305,6 @@ class _ProductScreenState extends State<ProductScreen> {
                       return null;
                     },
                   ),
-                  // You can add more fields for editing other product attributes
                 ],
               ),
             ),
