@@ -10,6 +10,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => CityController()),
         ChangeNotifierProvider(create: (context) => OrderController()),
+        ChangeNotifierProvider(create: (context) => ItemController()),
         ChangeNotifierProvider(create: (context) => PaymentMethodController()),
         ChangeNotifierProvider(create: (context) => StatusController()),
         ChangeNotifierProvider(create: (context) => ProductController()),
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashScreen(),
         '/': (context) => const HomeScreen(title: 'EnlanadosApp'),
         '/orders': (context) => const OrderScreen(title: 'Pedidos'),
+        '/create-order': (context) => const CreateOrderScreen(title: 'Nuevo Pedido'),
         '/products': (context) => const ProductScreen(title: 'Productos'),
         '/product-types': (context) => const ProductTypeScreen(title: 'Tipos de Productos'),
         '/wool-stock': (context) => const WoolStockScreen(title: 'Inventario'),

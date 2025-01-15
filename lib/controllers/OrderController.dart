@@ -30,13 +30,13 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> insertOrder(Order order) async {
+  Future<int?> insertOrder(Order order) async {
     try {
-      await DBProvider.db.insertOrder(order);
+      Order newOrder = await DBProvider.db.insertOrder(order);
+      return newOrder.id;
     } catch(e){
-      return e.toString();
+      return -1;
     }
-    return await getAllOrders();
   }
 
   Future<String> updateOrder(Order order) async {
@@ -66,9 +66,9 @@ class OrderController with ChangeNotifier {
     return await getAllOrders();
   }
 
-  Future<String> deleteOrder(Order order) async {
+  Future<String> deleteOrder(int orderId) async {
     try {
-      await DBProvider.db.deleteOrder(order);
+      await DBProvider.db.deleteOrder(orderId);
     } catch(e){
       return e.toString();
     }

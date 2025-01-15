@@ -20,9 +20,9 @@ class ProductTypeController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> getOneProductType(ProductType productType) async {
+  Future<String> getOneProductType(int productTypeId) async {
     try {
-      _currentProductType = await DBProvider.db.readOneProductType(productType);
+      _currentProductType = await DBProvider.db.readOneProductType(productTypeId);
       notifyListeners();
     } catch (e) {
       return e.toString();

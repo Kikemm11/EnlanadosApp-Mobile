@@ -11,9 +11,9 @@ class ItemController with ChangeNotifier {
 
   Item? get currentItem => _currentItem;
 
-  Future<String> getOrderItems(Order order) async {
+  Future<String> getOrderItems(int orderId) async {
     try {
-      _items = await DBProvider.db.readOrderItems(order);
+      _items = await DBProvider.db.readOrderItems(orderId);
       notifyListeners();
     } catch (e) {
       return e.toString();

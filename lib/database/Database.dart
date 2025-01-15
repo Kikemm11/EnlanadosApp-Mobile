@@ -171,7 +171,7 @@ class DBProvider {
     final db = await database;
     final result = await db!.query(
       'city',
-      orderBy: 'id ASC',
+      orderBy: 'name ASC',
     );
     return result.map((e)=> City.fromJson(e)).toList();
   }
@@ -333,13 +333,13 @@ class DBProvider {
     return result.map((e)=> ProductType.fromJson(e)).toList();
   }
 
-  Future<ProductType> readOneProductType(ProductType productType) async {
+  Future<ProductType> readOneProductType(int productTypeId) async {
     final db = await database;
     final maps = await db!.query(
       'product_type',
       columns: ['id', 'name', 'product_id', 'price', 'created_at'],
       where: 'id = ?',
-      whereArgs: [productType.id],
+      whereArgs: [productTypeId],
     );
 
     if (maps.isNotEmpty) {
@@ -529,12 +529,12 @@ class DBProvider {
 
   // Delete method
 
-  Future<int> deleteOrder(Order order) async {
+  Future<int> deleteOrder(int orderId) async {
     final db = await database;
     return db!.delete(
         'orders',
         where: 'id = ?',
-        whereArgs: [order.id]
+        whereArgs: [orderId]
     );
   }
 
@@ -542,12 +542,12 @@ class DBProvider {
 
   // Read methods
 
-  Future<List<Item>> readOrderItems(Order order) async {
+  Future<List<Item>> readOrderItems(int orderId) async {
     final db = await database;
     final result = await db!.query(
-      'item,',
+      'item',
       where: 'order_id = ?',
-      whereArgs: [order.id],
+      whereArgs: [orderId],
       orderBy: 'id ASC',
     );
     return result.map((e)=> Item.fromJson(e)).toList();

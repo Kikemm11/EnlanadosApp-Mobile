@@ -23,10 +23,10 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchNotes();
+    _fetchProductTypes();
   }
 
-  Future<void> _fetchNotes() async {
+  Future<void> _fetchProductTypes() async {
     await context.read<ProductTypeController>().getAllProductTypes();
     setState(() {
     });

@@ -3,6 +3,7 @@
 export 'HomeScreen.dart';
 export 'SplashScreen.dart';
 export 'OrderScreen.dart';
+export 'CreateOrderScreen.dart';
 export 'ProductScreen.dart';
 export 'ProductTypeScreen.dart';
 export 'WoolStockScreen.dart';

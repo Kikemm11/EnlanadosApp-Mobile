@@ -62,6 +62,13 @@ class _OrderScreenState extends State<OrderScreen> {
             ],
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            Navigator.pushNamed(context, '/create-order');
+          },
+          backgroundColor: Colors.orange[100],
+          child: const Icon(Icons.add),
+        ),
         bottomNavigationBar: EnlanadosNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
