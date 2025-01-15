@@ -9,6 +9,7 @@ class Item {
   int productTypeId;
   String description;
   double addedPrice;
+  double discount;
   DateTime createdAt;
 
   Item({
@@ -17,6 +18,7 @@ class Item {
     required this.productTypeId,
     required this.description,
     this.addedPrice = 0.0,
+    this.discount = 0.0,
     DateTime? createdAt,
   }
       ): createdAt = createdAt ?? DateTime.now();
@@ -28,6 +30,7 @@ class Item {
       productTypeId: json["product_type_id"] as int,
       description: json["description"] as String,
       addedPrice: json["added_price"] as double,
+      discount: json["discount"] as double,
       createdAt: DateTime.parse(json["created_at"] as String)
   );
 
@@ -37,6 +40,7 @@ class Item {
     "product_type_id": productTypeId,
     "description": description,
     "added_price": addedPrice,
+    "discount": discount,
     "created_at": createdAt.toIso8601String()
   };
 

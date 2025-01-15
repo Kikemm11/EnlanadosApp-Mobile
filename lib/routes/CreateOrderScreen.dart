@@ -328,32 +328,73 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             future: _getItemProductType(context, value, item.productTypeId),
                             builder: (context, snapshot){
                               final productType = snapshot.data!;
-                              return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                                elevation: 1.0,
-                                color: Colors.cyan[50],
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 0.0),
-                                  title: Text(
-                                    productType.name,
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  subtitle: Text(
-                                    productType.price.toString(),
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  trailing: IconButton(
-                                    icon: const Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.grey,
-                                      size: 20.0,
+                              return Dismissible(
+                              key: Key(item.id.toString()),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (direction) async {
+                              // Show confirmation dialog before dismissing
+                              bool shouldDelete = await _showDeleteConfirmationDialog(productType);
+
+                              return shouldDelete; // Only dismiss the card if the user confirmed the deletion
+                              },
+                              onDismissed: (direction) async {
+                              String result = await context.read<ItemController>().deleteItem(item);
+                              setState(() {
+                                _fetchOrderItems();
+                              });
+                              if (result == 'Ok') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                              content: Text('Producto eliminado!'),
+                              backgroundColor: Colors.green,
+                              ),
+                              );
+                              } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                              content: Text('Error al eliminar el producto'),
+                              backgroundColor: Colors.red,
+                              ),
+                              );
+                              }
+                              },
+                              background: Container(
+                              color: Colors.red[100],
+                              child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                              padding: const EdgeInsets.only(right: 20.0),
+                              child: Icon(Icons.delete, color: Colors.grey),
+                              ),
+                              ),
+                              ),
+                              child: Card(
+                                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                                  elevation: 1.0,
+                                  color: Colors.cyan[50],
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 0.0),
+                                    title: Text(
+                                      productType.name,
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                    onPressed: () {},
+                                    subtitle: Text(
+                                      productType.price.toString(),
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(
+                                        Icons.remove_red_eye,
+                                        color: Colors.grey,
+                                        size: 20.0,
+                                      ),
+                                      onPressed: () {},
+                                    ),
                                   ),
                                 ),
                               );
@@ -422,6 +463,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     int? productTypeId;
     String description = '';
     double? addedPrice;
+    double? discount;
 
     ProductType? productType;
     TextEditingController _priceController = TextEditingController(text:'0.0');
@@ -430,7 +472,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Agregar Producto al Pedido'),
+          title: const Text('Agregar Producto'),
           scrollable: true,
           content: Form(
             key: _itemFormKey,
@@ -443,6 +485,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     return DropdownButtonFormField<String>(
                       decoration: const InputDecoration(
                         labelText: 'Tipo de Producto',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(),
                       ),
                       dropdownColor: Colors.cyan[50],
@@ -528,6 +571,29 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     onSaved: (value) {
                       addedPrice = double.tryParse(value ?? '0');
                     },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Descuento',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                    ),
+                    controller: TextEditingController(text: '0.0'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) {
+                      discount = double.tryParse(value ?? '0');
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return null;
+                      }
+
+                      if (productType != null){
+                        if (double.tryParse(value)! > (productType!.price)){
+                          return 'Ese descuento está como raro!';
+                        }
+                      }
+
+                    },
                   )
                 ],
               ),
@@ -548,7 +614,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 if (_itemFormKey.currentState!.validate()) {
                   _itemFormKey.currentState!.save();
 
-                  Item item = Item(orderId: orderId, productTypeId: productTypeId!, description: description, addedPrice: addedPrice!);
+                  Item item = Item(orderId: orderId, productTypeId: productTypeId!, description: description, addedPrice: addedPrice!, discount: discount!);
                   String result = await context
                       .read<ItemController>()
                       .insertItem(item);
@@ -587,4 +653,38 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       },
     );
   }
+
+
+  // Dialog confirm delete Item
+
+  Future<bool> _showDeleteConfirmationDialog(ProductType productType) async {
+    String productTypeName = productType.name;
+    bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar el producto "$productTypeName" del pedido?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // User cancels deletion
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirms deletion
+              },
+              child: Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Return true if the user confirmed the deletion, false otherwise
+    return shouldDelete ?? false;
+  }
+  
 }
