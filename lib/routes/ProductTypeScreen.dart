@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:enlanados_app_mobile/widgets/widgets.dart';
 import 'package:enlanados_app_mobile/models/ProductType.dart';
 import 'package:enlanados_app_mobile/controllers/ProductTypeController.dart';
 

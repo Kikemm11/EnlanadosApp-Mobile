@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(title: 'EnlanadosApp'),
         '/orders': (context) => const OrderScreen(title: 'Pedidos'),
         '/create-order': (context) => const CreateOrderScreen(title: 'Nuevo Pedido'),
+        '/order-detail': (context) => const OrderDetailScreen(title: 'Detalle de Pedido'),
         '/products': (context) => const ProductScreen(title: 'Productos'),
         '/product-types': (context) => const ProductTypeScreen(title: 'Tipos de Productos'),
         '/wool-stock': (context) => const WoolStockScreen(title: 'Inventario'),

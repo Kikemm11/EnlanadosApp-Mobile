@@ -20,6 +20,8 @@ class _OrderScreenState extends State<OrderScreen> {
   int _selectedIndex = 0;
 
   IconData? currencyIcon;
+  IconData? statusIcon;
+  Color statusIconColor = Colors.orange;
 
 
   // Fetch current month orders for initial state
@@ -94,6 +96,21 @@ class _OrderScreenState extends State<OrderScreen> {
                               currencyIcon = Icons.money;
                             }
 
+                            switch (orderStatus.id){
+                              case 1:
+                                statusIcon = Icons.info;
+                                statusIconColor = Colors.orange;
+                                break;
+                              case 2:
+                                statusIcon = Icons.check_circle_outline;
+                                statusIconColor = Colors.green;
+                                break;
+                              case 3:
+                                statusIcon = Icons.cancel;
+                                statusIconColor = Colors.red;
+                                break;
+                            }
+
                             return Card(
                               margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                               elevation: 2.0,
@@ -102,6 +119,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                 contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                                 onLongPress: (){
                                   _showOrderActionBottomSheet(context, order);
+                                },
+                                onTap: (){
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/order-detail',
+                                    arguments: {'order': order},
+                                  ).then((_){
+                                    setState(() {
+                                      _fetchCurrentMonthOrders();
+                                    });
+                                  });
                                 },
                                 leading: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +210,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.info, color: Colors.orange[600], size: 16.0),
+                                        Icon(statusIcon, color: statusIconColor, size: 16.0),
                                         SizedBox(width: 5.0),
                                         Text(
                                           orderStatus.name,
