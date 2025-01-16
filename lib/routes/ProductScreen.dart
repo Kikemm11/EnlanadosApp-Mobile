@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:enlanados_app_mobile/widgets/widgets.dart';
 import 'package:enlanados_app_mobile/models/Product.dart';
 import 'package:enlanados_app_mobile/controllers/ProductController.dart';
+import 'package:enlanados_app_mobile/controllers/ProductTypeController.dart';
 
 
 
@@ -31,6 +32,11 @@ class _ProductScreenState extends State<ProductScreen> {
     await context.read<ProductController>().getAllProducts();
     setState(() {
     });
+  }
+
+  Future<void> _fetchProductProductTypes(int productId) async {
+    await context.read<ProductTypeController>().getProductProductTypes(productId);
+    setState(() {});
   }
 
 
@@ -70,7 +76,6 @@ class _ProductScreenState extends State<ProductScreen> {
                           confirmDismiss: (direction) async {
                             // Show confirmation dialog before dismissing
                             bool shouldDelete = await _showDeleteConfirmationDialog(product);
-
                             return shouldDelete; // Only dismiss the card if the user confirmed the deletion
                           },
                           onDismissed: (direction) async {
@@ -133,6 +138,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                           color: Colors.orange[600],
                                       ),
                                       onPressed: () {
+                                        _fetchProductProductTypes((product.id)!);
                                         Navigator.pushNamed(
                                           context,
                                           '/product-types',

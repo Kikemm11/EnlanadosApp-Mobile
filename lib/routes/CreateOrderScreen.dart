@@ -33,7 +33,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     _fetchCities();
     _fetchPaymentMethods();
     _fetchOrderItems();
-    _fetchProductTypes();
+    _fetchProducts();
   }
 
   Future<void> _fetchCities() async {
@@ -51,8 +51,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     setState(() {});
   }
 
-  Future<void> _fetchProductTypes() async {
-    await context.read<ProductTypeController>().getAllProductTypes();
+  Future<void> _fetchProducts() async {
+    await context.read<ProductController>().getAllProducts();
+    setState(() {});
+  }
+
+  Future<void> _fetchProductProductTypes(int productId) async {
+    await context.read<ProductTypeController>().getProductProductTypes(productId);
     setState(() {});
   }
 
@@ -490,6 +495,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     return value.currentProductType!;
   }
 
+  Future<Product> _getProduct(BuildContext context,
+      ProductController value, int productId) async {
+    await context
+        .read<ProductController>()
+        .getOneProduct(productId);
+    return value.currentProduct!;
+  }
+
 
   // Dialog create Order Item
 
@@ -500,7 +513,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     double? addedPrice;
     double? discount;
 
+    Product? product;
     ProductType? productType;
+    bool productTypeReadOnly = true;
     TextEditingController _priceController = TextEditingController(text:'0.0');
 
     showDialog(
@@ -515,9 +530,80 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Consumer<ProductController>(
+                      builder: (context, values, index) {
+                        return DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: 'Producto',
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            border: OutlineInputBorder(),
+                          ),
+                          dropdownColor: Colors.cyan[50],
+                          icon: Icon(
+                            Icons.arrow_drop_down_circle,
+                            color: Colors.cyan[600],
+                          ),
+                          iconSize: 21.0,
+                          items: values.products
+                              .map((product) => DropdownMenuItem(
+                            value: product.id.toString(),
+                            child: Row(
+                              children: [
+                                Icon(Icons.shopping_bag,
+                                    color: Colors.cyan[600]),
+                                SizedBox(width: 8.0),
+                                Text(product.name),
+                              ],
+                            ),
+                          ))
+                              .toList(),
+                          onChanged: (value) async {
+
+                            setState(() {
+                              productTypeReadOnly = true;
+                            });
+                            if (value != null) {
+                              int? parsedId = int.tryParse(value);
+
+                              if (parsedId != null) {
+                                // Fetch the product type asynchronously
+                                Product? fetchedProduct = await _getProduct(context, values, parsedId);
+
+                                if (fetchedProduct != null) {
+                                  // Update the state after fetching the ProductType
+                                  setState(() {
+                                    product = fetchedProduct;
+                                    productType = null;
+                                    productTypeId = null;
+                                    _fetchProductProductTypes(parsedId);
+                                    productTypeReadOnly = false;
+                                    _priceController.text = '0.0';
+                                  });
+
+
+                                }
+                              }
+                            }
+                          },
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                          ),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'No olvides seleccionar el producto papá, amor!';
+                            }
+                            return null;
+                          },
+                        );
+                      }),
+                  SizedBox(
+                    height: 15.0,
+                  ),
                   Consumer<ProductTypeController>(
                       builder: (context, values, index) {
                     return DropdownButtonFormField<String>(
+                      value: productTypeId?.toString(),
                       decoration: const InputDecoration(
                         labelText: 'Tipo de Producto',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -529,7 +615,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         color: Colors.cyan[600],
                       ),
                       iconSize: 21.0,
-                      items: values.productTypes
+                      items: values.productProductTypes
                           .map((product) => DropdownMenuItem(
                                 value: product.id.toString(),
                                 child: Row(
@@ -542,7 +628,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                 ),
                               ))
                           .toList(),
-                      onChanged: (value) async {
+                      onChanged: productTypeReadOnly ? null : (value) async {
                         if (value != null) {
                           int? parsedId = int.tryParse(value);
 

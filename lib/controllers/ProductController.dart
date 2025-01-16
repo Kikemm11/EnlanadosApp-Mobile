@@ -20,14 +20,14 @@ class ProductController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> getOneProduct(Product product) async {
+  Future<Product?> getOneProduct(int productId) async {
     try {
-      _currentProduct = await DBProvider.db.readOneProduct(product);
+      _currentProduct = await DBProvider.db.readOneProduct(productId);
       notifyListeners();
+      return _currentProduct;
     } catch (e) {
-      return e.toString();
+      return null;
     }
-    return 'Ok';
   }
 
   Future<String> insertProduct(Product product) async {

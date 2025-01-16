@@ -271,13 +271,13 @@ class DBProvider {
     return result.map((e)=> Product.fromJson(e)).toList();
   }
 
-  Future<Product> readOneProduct(Product status) async {
+  Future<Product> readOneProduct(int productId) async {
     final db = await database;
     final maps = await db!.query(
       'product',
       columns: ['id', 'name', 'created_at'],
       where: 'id = ?',
-      whereArgs: [status.id],
+      whereArgs: [productId],
     );
 
     if (maps.isNotEmpty) {
@@ -330,6 +330,17 @@ class DBProvider {
     final db = await database;
     final result = await db!.query(
       'product_type',
+      orderBy: 'id ASC',
+    );
+    return result.map((e)=> ProductType.fromJson(e)).toList();
+  }
+
+  Future<List<ProductType>> readProductProductTypes(int productId) async {
+    final db = await database;
+    final result = await db!.query(
+      'product_type',
+      where: 'product_id = ?',
+      whereArgs: [productId],
       orderBy: 'id ASC',
     );
     return result.map((e)=> ProductType.fromJson(e)).toList();

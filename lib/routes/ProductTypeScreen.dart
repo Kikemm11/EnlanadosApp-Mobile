@@ -19,19 +19,6 @@ class ProductTypeScreen extends StatefulWidget {
 class _ProductTypeScreenState extends State<ProductTypeScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-// Fetch products for initial state
-  @override
-  void initState() {
-    super.initState();
-    _fetchProductTypes();
-  }
-
-  Future<void> _fetchProductTypes() async {
-    await context.read<ProductTypeController>().getAllProductTypes();
-    setState(() {
-    });
-  }
-
 
   // Main widget
 
@@ -81,9 +68,9 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                     builder: (context, value, child) {
                       return Expanded(
                         child: ListView.builder(
-                          itemCount: value.productTypes.length,
+                          itemCount: value.productProductTypes.length,
                           itemBuilder: (context, index) {
-                            ProductType productType = value.productTypes[index];
+                            ProductType productType = value.productProductTypes[index];
                             return Dismissible(
                               key: Key(productType.id.toString()),
                               direction: DismissDirection.endToStart,
@@ -92,7 +79,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                                 return shouldDelete;
                               },
                               onDismissed: (direction) async {
-                                String result = await context.read<ProductTypeController>().deleteProductType(productType);
+                                String result = await context.read<ProductTypeController>().deleteProductType(productType, productId);
                                 if (result == 'Ok') {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -141,7 +128,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                                       color: Colors.orange[600],
                                     ),
                                     onPressed: () {
-                                      _showEditProductTypeFormDialog(productType);
+                                      _showEditProductTypeFormDialog(productType, productId);
                                     },
                                   ),
                                 ),
@@ -234,7 +221,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                   _formKey.currentState!.save();
 
                   ProductType productType = ProductType(name: name, productId: productId , price: double.tryParse(price)!);
-                  String result = await context.read<ProductTypeController>().insertProductType(productType);
+                  String result = await context.read<ProductTypeController>().insertProductType(productType, productId);
 
                   if (result != 'Ok'){
 
@@ -274,7 +261,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
 
   // Dialog edit Product Type
 
-  void _showEditProductTypeFormDialog(ProductType productType) {
+  void _showEditProductTypeFormDialog(ProductType productType, int productId) {
     // Controllers for text fields
     TextEditingController nameController = TextEditingController(text: productType.name);
     TextEditingController priceController = TextEditingController(text: productType.price.toString());
@@ -339,7 +326,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
 
-                  String result = await context.read<ProductTypeController>().updateProductType(productType);
+                  String result = await context.read<ProductTypeController>().updateProductType(productType, productId);
 
                   if (result != 'Ok') {
                     String message = 'Ups, ha ocurrido un error actualizando el producto!';
