@@ -20,13 +20,13 @@ class StatusController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> getOneStatus(Status status) async {
+  Future<Status?> getOneStatus(int statusId) async {
     try {
-      _currentStatus = await DBProvider.db.readOneStatus(status);
+      _currentStatus = await DBProvider.db.readOneStatus(statusId);
       notifyListeners();
+      return _currentStatus;
     } catch (e) {
-      return e.toString();
+      return null;
     }
-    return 'Ok';
   }
 }

@@ -20,13 +20,13 @@ class CityController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> getOneCity(City city) async {
+  Future<City?> getOneCity(int cityId) async {
     try {
-      _currentCity = await DBProvider.db.readOneCity(city);
+      _currentCity = await DBProvider.db.readOneCity(cityId);
       notifyListeners();
+      return _currentCity;
     } catch (e) {
-      return e.toString();
+      return null;
     }
-    return 'Ok';
   }
 }

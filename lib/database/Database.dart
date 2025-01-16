@@ -178,13 +178,13 @@ class DBProvider {
     return result.map((e)=> City.fromJson(e)).toList();
   }
 
-  Future<City> readOneCity(City city) async {
+  Future<City> readOneCity(int cityId) async {
     final db = await database;
     final maps = await db!.query(
       'city',
       columns: ['id', 'name', 'created_at'],
       where: 'id = ?',
-      whereArgs: [city.id],
+      whereArgs: [cityId],
     );
 
     if (maps.isNotEmpty) {
@@ -209,13 +209,13 @@ class DBProvider {
     return result.map((e)=> Status.fromJson(e)).toList();
   }
 
-  Future<Status> readOneStatus(Status status) async {
+  Future<Status> readOneStatus(int statusId) async {
     final db = await database;
     final maps = await db!.query(
       'status',
       columns: ['id', 'name', 'created_at'],
       where: 'id = ?',
-      whereArgs: [status.id],
+      whereArgs: [statusId],
     );
 
     if (maps.isNotEmpty) {
@@ -240,13 +240,13 @@ class DBProvider {
     return result.map((e)=> PaymentMethod.fromJson(e)).toList();
   }
 
-  Future<PaymentMethod> readOnePaymentMethod(PaymentMethod paymentMethod) async {
+  Future<PaymentMethod> readOnePaymentMethod(int paymentMethodId) async {
     final db = await database;
     final maps = await db!.query(
       'payment_method',
       columns: ['id', 'name', 'created_at'],
       where: 'id = ?',
-      whereArgs: [paymentMethod.id],
+      whereArgs: [paymentMethodId],
     );
 
     if (maps.isNotEmpty) {
@@ -462,6 +462,22 @@ class DBProvider {
       orderBy: 'id ASC',
     );
     return result.map((e)=> Order.fromJson(e)).toList();
+  }
+
+  Future<List<Order>> readCurrentMonthOrders() async {
+    final db = await database;
+    DateTime now = DateTime.now();
+    String currentYear = now.year.toString();
+    String currentMonth = now.month.toString().padLeft(2, '0'); // Ensure month is two digits
+
+    final result = await db!.query(
+      'orders',
+      where: "strftime('%Y', created_at) = ? AND strftime('%m', created_at) = ?",
+      whereArgs: [currentYear, currentMonth],
+      orderBy: 'id ASC',
+    );
+
+    return result.map((e) => Order.fromJson(e)).toList();
   }
 
   Future<Order> readOneOrder(Order order) async {

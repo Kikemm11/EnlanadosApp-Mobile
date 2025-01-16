@@ -20,13 +20,13 @@ class PaymentMethodController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> getOnePaymentMethod(PaymentMethod paymentMethod) async {
+  Future<PaymentMethod?> getOnePaymentMethod(int paymentMethodId) async {
     try {
-      _currentPaymentMethod = await DBProvider.db.readOnePaymentMethod(paymentMethod);
+      _currentPaymentMethod = await DBProvider.db.readOnePaymentMethod(paymentMethodId);
       notifyListeners();
+      return _currentPaymentMethod;
     } catch (e) {
-      return e.toString();
+      return null;
     }
-    return 'Ok';
   }
 }

@@ -30,6 +30,16 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  Future<String> getCurrentMonthOrders() async {
+    try {
+      _orders = await DBProvider.db.readCurrentMonthOrders();
+      notifyListeners();
+    } catch (e) {
+      return e.toString();
+    }
+    return 'Ok';
+  }
+
   Future<int?> insertOrder(Order order) async {
     try {
       Order newOrder = await DBProvider.db.insertOrder(order);
@@ -45,7 +55,7 @@ class OrderController with ChangeNotifier {
     } catch(e){
       return e.toString();
     }
-    return await getAllOrders();
+    return 'Ok';
   }
 
   Future<String> deliverOrder(Order order) async {

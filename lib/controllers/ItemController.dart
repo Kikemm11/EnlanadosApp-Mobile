@@ -1,3 +1,4 @@
+import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:enlanados_app_mobile/database/Database.dart';
 import 'package:enlanados_app_mobile/models/Order.dart';
@@ -29,6 +30,22 @@ class ItemController with ChangeNotifier {
       return e.toString();
     }
     return 'Ok';
+  }
+  
+  Future<double> getOrderTotalIncome(Order order) async {
+
+    try {
+      double result = 0.0;
+      List<Item> items = await DBProvider.db.readOrderItems(order.id!);
+
+      for (Item item in items) {
+        ProductType productType = await DBProvider.db.readOneProductType(item.productTypeId);
+        result += (productType.price + item.addedPrice - item.discount);
+      }
+      return result;
+    } catch (e) {
+      return 0.0;
+    }
   }
 
   Future<String> insertItem(Item item) async {
