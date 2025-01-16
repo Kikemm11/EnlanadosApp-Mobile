@@ -120,8 +120,8 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
                           ),
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                            elevation: 2.0,
-                            color: Colors.yellow[50],
+                            elevation: 8.0,
+                            color: Colors.green[50],
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget> [

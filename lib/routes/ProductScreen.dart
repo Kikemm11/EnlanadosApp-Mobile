@@ -110,8 +110,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                            elevation: 2.0,
-                            color: Colors.yellow[50],
+                            elevation: 8.0,
+                            color: Colors.green[50],
                             child: ListTile(
                               contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                               leading: Icon(Icons.shopping_bag, color: Colors.green[200]),

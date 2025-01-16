@@ -436,9 +436,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-
-
-
+                      
                       if (readOnlyFields) {
                         print(order.statusId);
                         if (order.statusId == 1){
@@ -449,7 +447,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('No puedes editar un Pedido Entregado o Cancelado!'),
+                              content: Text('No puedes editar un pedido Entregado o Cancelado, corazón!'),
                               backgroundColor: Colors.red,
                             ),
                           );
