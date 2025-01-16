@@ -49,12 +49,12 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
 
-  Future<String> deleteItem(Item item) async {
+  Future<String> deleteItem(Item item, orderId) async {
     try {
       await DBProvider.db.deleteItem(item);
     } catch(e){
       return e.toString();
     }
-    return 'Ok';
+    return getOrderItems(orderId);
   }
 }

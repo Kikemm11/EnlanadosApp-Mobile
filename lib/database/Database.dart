@@ -152,7 +152,8 @@ class DBProvider {
           added_price REAL CHECK(added_price >= 0.0),
           discount REAL CHECK(discount >= 0.0),
           created_at TEXT,
-          FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+          FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+          FOREIGN KEY (product_type_id) REFERENCES product_type(id)
           );
           ''');
 

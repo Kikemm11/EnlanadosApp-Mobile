@@ -107,6 +107,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                                       backgroundColor: Colors.red,
                                     ),
                                   );
+                                  Navigator.pop(context);
                                 }
                               },
                               background: Container(

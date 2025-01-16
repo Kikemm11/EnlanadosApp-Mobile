@@ -322,105 +322,139 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       itemCount: value.items.length,
                       itemBuilder: (context, index) {
                         Item item = value.items[index];
-                        return Consumer<ProductTypeController>(
-                            builder: (context, value, index) {
-                          return FutureBuilder<ProductType?>(
-                            future: _getItemProductType(context, value, item.productTypeId),
-                            builder: (context, snapshot){
-                              final productType = snapshot.data!;
-                              return Dismissible(
-                              key: Key(item.id.toString()),
-                              direction: DismissDirection.endToStart,
-                              confirmDismiss: (direction) async {
-                              // Show confirmation dialog before dismissing
-                              bool shouldDelete = await _showDeleteConfirmationDialog(productType);
 
-                              return shouldDelete; // Only dismiss the card if the user confirmed the deletion
-                              },
-                              onDismissed: (direction) async {
-                              String result = await context.read<ItemController>().deleteItem(item);
-                              setState(() {
-                                _fetchOrderItems();
-                              });
-                              if (result == 'Ok') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                              content: Text('Producto eliminado!'),
-                              backgroundColor: Colors.green,
-                              ),
-                              );
-                              } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                              content: Text('Error al eliminar el producto'),
-                              backgroundColor: Colors.red,
-                              ),
-                              );
-                              }
-                              },
-                              background: Container(
-                              color: Colors.red[100],
-                              child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                              padding: const EdgeInsets.only(right: 20.0),
-                              child: Icon(Icons.delete, color: Colors.grey),
-                              ),
-                              ),
-                              ),
-                              child: Card(
-                                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                                  elevation: 1.0,
-                                  color: Colors.cyan[50],
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0, vertical: 0.0),
-                                    title: Text(
-                                      productType.name,
-                                      style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    subtitle: Text(
-                                      productType.price.toString(),
-                                      style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: const Icon(
-                                        Icons.remove_red_eye,
-                                        color: Colors.grey,
-                                        size: 20.0,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ),
+                        return FutureBuilder<ProductType?>(
+                          future: context
+                              .read<ProductTypeController>()
+                              .getOneProductType(item.productTypeId),
+                          builder: (context, snapshot) {
+
+                            if (!snapshot.hasData || snapshot.data == null) {
+                              return Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                                elevation: 1.0,
+                                color: Colors.cyan[50],
+                                child: ListTile(
+                                  title: Text('Product not found'),
                                 ),
                               );
                             }
 
-                          );
-                        });
+                            ProductType productType = snapshot.data!;
+
+                            return Dismissible(
+                              key: Key(item.id.toString()),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (direction) async {
+                                // Show confirmation dialog before dismissing
+                                bool shouldDelete = await _showDeleteConfirmationDialog();
+                                return shouldDelete; // Only dismiss the card if the user confirmed the deletion
+                              },
+                              onDismissed: (direction) async {
+                                String result = await context.read<ItemController>().deleteItem(item, orderId);
+                                setState(() {
+                                  _fetchOrderItems();
+                                });
+                                if (result == 'Ok') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Producto eliminado!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error al eliminar el producto'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                              background: Container(
+                                color: Colors.red[100],
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: Icon(Icons.delete, color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                                elevation: 1.0,
+                                color: Colors.cyan[50],
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 0.0),
+                                  title: Text(
+                                    productType.name,
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  subtitle: Text(
+                                    'Total: ${(productType.price + item.addedPrice - item.discount).toString()} \$',
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.grey,
+                                      size: 20.0,
+                                    ),
+                                    onPressed: () {
+                                      _showItemDetailDialog(context, item, productType);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                     );
-                  }),
+
+                      }),
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.pop(context);
                         if (orderId != 0){
-                          OrderController().deleteOrder(orderId);
+                          await OrderController().deleteOrder(orderId);
                         }
                       },
                       child: const Text('Cancelar'),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Order order = Order(client: client!, cityId: city!, paymentMethodId: paymentMethod!, credit: credit!, estimatedDate: estimatedDate!);
+                        String result = await OrderController().updateOrder(order);
+
+                        if (result == 'Ok') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Pedido creado!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error al crear el pedido!'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                        Navigator.pop(context);
+                      },
                       child: const Text('Guardar'),
                     ),
                   ],
@@ -448,13 +482,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     }
   }
 
-  Future<ProductType?> _getItemProductType(BuildContext context,
+  Future<ProductType> _getItemProductType(BuildContext context,
       ProductTypeController value, int productTypeId) async {
     await context
         .read<ProductTypeController>()
         .getOneProductType(productTypeId);
-    return value.currentProductType;
+    return value.currentProductType!;
   }
+
 
   // Dialog create Order Item
 
@@ -613,7 +648,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               onPressed: () async {
                 if (_itemFormKey.currentState!.validate()) {
                   _itemFormKey.currentState!.save();
-
                   Item item = Item(orderId: orderId, productTypeId: productTypeId!, description: description, addedPrice: addedPrice!, discount: discount!);
                   String result = await context
                       .read<ItemController>()
@@ -657,14 +691,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   // Dialog confirm delete Item
 
-  Future<bool> _showDeleteConfirmationDialog(ProductType productType) async {
-    String productTypeName = productType.name;
+  Future<bool> _showDeleteConfirmationDialog() async {
     bool? shouldDelete = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirmar eliminación'),
-          content: Text('¿Estás seguro de que deseas eliminar el producto "$productTypeName" del pedido?'),
+          content: Text('¿Estás seguro de que deseas eliminar el producto del pedido?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -686,5 +719,76 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     // Return true if the user confirmed the deletion, false otherwise
     return shouldDelete ?? false;
   }
-  
+
+  // Dialog to show item details
+
+  void _showItemDetailDialog(BuildContext context, Item item, ProductType productType) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            productType.name,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Descripción:\n\n${item.description}',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Divider(
+                thickness: 1.0,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Precio: ${productType.price} \$',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    'Extra: ${item.addedPrice} \$',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16), // Adds space between rows
+              Center(
+                child: Text(
+                  'Descuento: ${item.discount} \$',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red[600],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text(
+                'Cerrar',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
