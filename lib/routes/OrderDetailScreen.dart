@@ -436,9 +436,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      
+
                       if (readOnlyFields) {
-                        print(order.statusId);
                         if (order.statusId == 1){
                           setState(() {
                             readOnlyFields = false;

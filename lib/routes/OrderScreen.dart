@@ -23,6 +23,8 @@ class _OrderScreenState extends State<OrderScreen> {
   IconData? statusIcon;
   Color statusIconColor = Colors.orange;
 
+  Map<String, dynamic> filterData = {};
+
 
   // Fetch current month orders for initial state
   @override
@@ -35,6 +37,21 @@ class _OrderScreenState extends State<OrderScreen> {
     await context.read<OrderController>().getCurrentMonthOrders();
     setState(() {
     });
+  }
+
+  Future<void> _fetchCities() async {
+    await context.read<CityController>().getAllCities();
+    setState(() {});
+  }
+
+  Future<void> _fetchPaymentMethods() async {
+    await context.read<PaymentMethodController>().getAllPaymentMethods();
+    setState(() {});
+  }
+
+  Future<void> _fetchStatus() async {
+    await context.read<StatusController>().getAllStatuses();
+    setState(() {});
   }
 
   @override
@@ -55,6 +72,14 @@ class _OrderScreenState extends State<OrderScreen> {
               color: Colors.white,
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.filter_list, color: Colors.white),
+              onPressed: () {
+                _showFilterForm(context);
+              },
+            ),
+          ],
         ),
         body: Center(
             child: Padding(
@@ -336,5 +361,277 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
+
+  void _showFilterForm(BuildContext context) {
+    _fetchCities();
+    _fetchCities();
+    _fetchStatus();
+
+    TextEditingController fromDateController = TextEditingController(text: '');
+    TextEditingController toDateController = TextEditingController(text: '');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 16.0),
+                Center(
+                  child: Text(
+                    'Filter Options',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Cliente',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            filterData["client"] = value;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      flex: 2,
+                      child: Consumer<CityController>(
+                        builder: (context, value, index){
+                          return DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Ciudad',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: value.cities
+                                .map((city) => DropdownMenuItem(
+                              value: city.id.toString(),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.location_city,
+                                    color: Colors.cyan[600],
+                                    size: 15.0,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(city.name),
+                                ],
+                              ),
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                filterData["city"]=  value != null ? int.tryParse(value) : null;
+                              });
+                            },
+                          );
+                        }
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Consumer<PaymentMethodController>(
+                        builder: (context, value, index){
+                          return DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Método de Pago',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: value.paymentMethods
+                                .map((method) => DropdownMenuItem(
+                              value: method.id.toString(),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.currency_exchange,
+                                    color: Colors.cyan[600],
+                                    size: 15.0,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(method.name),
+                                ],
+                              ),
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                filterData["paymentMethod"] = value != null ? int.tryParse(value) : null;
+                              });
+                            },
+                          );
+                        }
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      flex: 2,
+                      child: Consumer<StatusController>(
+                        builder: (context, value, index){
+                          return DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Estatus',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: value.statuses
+                                .map((status) => DropdownMenuItem(
+                              value: status.id.toString(),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.info_outline,
+                                      color: Colors.cyan[600],
+                                    size: 15.0,
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(status.name),
+                                ],
+                              ),
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                filterData["status"] = value != null ? int.tryParse(value) : null;
+                              });
+                            },
+                          );
+                        }
+
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Desde',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.calendar_today, color: Colors.cyan[600],),
+                        ),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              filterData["fromDate"] = picked;
+                              fromDateController.text = "${picked.day}-${picked.month}-${picked.year}";
+                            });
+
+                          }
+                        },
+                        controller: fromDateController,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value == 'Seleccionar Fecha') {
+                            return 'Selecciona una fecha Desde!';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Hasta',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.calendar_today, color: Colors.cyan[600],),
+                        ),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              filterData["toDate"] = picked;
+                              toDateController.text = "${picked.day}-${picked.month}-${picked.year}";
+                            });
+                          }
+                        },
+                        controller: toDateController,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+
+                // Submit Button
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _filterOrders(context);
+                      setState(() {
+                        filterData.updateAll((key, value) => null);
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text('Filtrar'),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  _filterOrders(BuildContext context) async {
+
+    if ((filterData["fromDate"] != null && filterData["toDate"] == null) || (filterData["fromDate"] == null && filterData["toDate"] != null) ){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Debes llenar las dos fechas para filtrar, tontis!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    else{
+     await  context.read<OrderController>().getFilteredOrders(Map.from(filterData));
+    }
+  }
 
 }

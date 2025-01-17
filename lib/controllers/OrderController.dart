@@ -40,6 +40,16 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  Future<String> getFilteredOrders(Map<String, dynamic> filterData) async {
+    try {
+      _orders = await DBProvider.db.readFilteredOrders(filterData);
+      notifyListeners();
+    } catch (e) {
+      return e.toString();
+    }
+    return 'Ok';
+  }
+
   Future<int?> insertOrder(Order order) async {
     try {
       Order newOrder = await DBProvider.db.insertOrder(order);

@@ -491,6 +491,52 @@ class DBProvider {
     return result.map((e) => Order.fromJson(e)).toList();
   }
 
+  Future<List<Order>> readFilteredOrders(Map<String, dynamic> filterData) async {
+    final db = await database;
+
+    // Base query
+    String query = 'SELECT * FROM orders';
+    List<String> conditions = [];
+    List<dynamic> arguments = [];
+
+    // Check each filter and add to the conditions and arguments if not null
+    if (filterData['client'] != null) {
+      conditions.add('LOWER(client) LIKE LOWER(?)');
+      arguments.add(filterData['client']);
+    }
+    if (filterData['city'] != null) {
+      conditions.add('city_id = ?');
+      arguments.add(filterData['city']);
+    }
+    if (filterData['paymentMethod'] != null) {
+      conditions.add('payment_method_id = ?');
+      arguments.add(filterData['paymentMethod']);
+    }
+    if (filterData['status'] != null) {
+      conditions.add('status_id = ?');
+      arguments.add(filterData['status']);
+    }
+
+    // Handle date filtering
+    if (filterData['fromDate'] != null && filterData['toDate'] != null) {
+      conditions.add('created_at BETWEEN ? AND ?');
+      arguments.add(filterData['fromDate'].toIso8601String());
+      arguments.add(filterData['toDate'].toIso8601String());
+    }
+
+    // Append conditions to the query if any exist
+    if (conditions.isNotEmpty) {
+      query += ' WHERE ${conditions.join(' AND ')}';
+    }
+
+    query += ' ORDER BY id ASC';
+
+    final result = await db!.rawQuery(query, arguments);
+
+    return result.map((e) => Order.fromJson(e)).toList();
+  }
+
+
   Future<Order> readOneOrder(Order order) async {
     final db = await database;
     final maps = await db!.query(

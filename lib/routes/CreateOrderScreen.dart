@@ -492,7 +492,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
     if (picked != null) {
       setState(() {
-        estimatedDateString = "${picked.day}-${picked.month}-${picked.year}";
+        estimatedDateString = "${picked.day}/${picked.month}/${picked.year}";
         estimatedDate = picked;
       });
     }
