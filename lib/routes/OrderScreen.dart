@@ -35,8 +35,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Future<void> _fetchCurrentMonthOrders() async {
     await context.read<OrderController>().getCurrentMonthOrders();
-    setState(() {
-    });
+    setState(() {});
   }
 
   Future<void> _fetchCities() async {
@@ -100,12 +99,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           builder: (context, snapshot) {
                             if (!snapshot.hasData || snapshot.data == null) {
                               return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                                elevation: 1.0,
-                                color: Colors.cyan[50],
-                                child: ListTile(
-                                  title: Text('Loading...'),
-                                ),
+                                color: Colors.white,
                               );
                             }
 
@@ -123,7 +117,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
                             switch (orderStatus.id){
                               case 1:
-                                statusIcon = Icons.info;
+                                statusIcon = Icons.warning;
                                 statusIconColor = Colors.orange;
                                 break;
                               case 2:
@@ -254,8 +248,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ),
                               ),
                             );
-
-
                           },
                         );
                       }

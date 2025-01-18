@@ -466,13 +466,20 @@ class DBProvider {
 
   // Read methods
 
-  Future<List<Order>> readAllOrders() async {
+  Future<List<Order>> readCurrentMonthWhitStatusOrders() async {
     final db = await database;
+    DateTime now = DateTime.now();
+    String currentYear = now.year.toString();
+    String currentMonth = now.month.toString().padLeft(2, '0');
+
     final result = await db!.query(
       'orders',
+      where: "strftime('%Y', created_at) = ? AND strftime('%m', created_at) = ? AND status_id = 1",
+      whereArgs: [currentYear, currentMonth],
       orderBy: 'id ASC',
     );
-    return result.map((e)=> Order.fromJson(e)).toList();
+
+    return result.map((e) => Order.fromJson(e)).toList();
   }
 
   Future<List<Order>> readCurrentMonthOrders() async {
@@ -534,6 +541,27 @@ class DBProvider {
     final result = await db!.rawQuery(query, arguments);
 
     return result.map((e) => Order.fromJson(e)).toList();
+  }
+
+  Future<List<Order>> readStatisticsOrders(Map<String, dynamic> dateData) async {
+    final db = await database;
+
+    // Base query
+    String query = 'SELECT * FROM orders';
+    List<String> conditions = [];
+    List<dynamic> arguments = [];
+
+    conditions.add('created_at BETWEEN ? AND ?');
+    arguments.add(dateData['fromDate']!.toIso8601String());
+    arguments.add(dateData['toDate']!.toIso8601String());
+
+    query += ' WHERE ${conditions.join(' AND ')}';
+    query += 'AND status_id = 2 ORDER BY id ASC';
+
+    final result = await db!.rawQuery(query, arguments);
+
+    return result.map((e) => Order.fromJson(e)).toList();
+
   }
 
 

@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: '/splash', // Set the splash screen as the initial route
+      initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/': (context) => const HomeScreen(title: 'EnlanadosApp'),

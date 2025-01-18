@@ -22,6 +22,16 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
 
+  Future<List<Item>> getOrderItemsList(int orderId) async {
+    try {
+      _items = await DBProvider.db.readOrderItems(orderId);
+      notifyListeners();
+      return _items;
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<String> getOneItem(Item item) async {
     try {
       _currentItem = await DBProvider.db.readOneItem(item);
@@ -47,6 +57,7 @@ class ItemController with ChangeNotifier {
       return 0.0;
     }
   }
+
 
   Future<String> insertItem(Item item) async {
     try {
