@@ -5,7 +5,9 @@ import 'package:enlanados_app_mobile/widgets/widgets.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 import 'package:enlanados_app_mobile/models/Order.dart';
 import 'package:enlanados_app_mobile/models/City.dart';
-import 'package:enlanados_app_mobile/models/Status.dart';
+
+
+import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
@@ -25,6 +27,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchCurrentMonthWithStatusOrders();
+
+    DateTime now = DateTime.now();
+
+    if ([18, 23, 4].contains(now.day)){
+      NotificationService.showInstantNotification(
+        "Hola, enlanatrabajadora 🐰!",
+        "Paso por acá para decirte que lo estás haciendo asombroso, te amu.",
+      );
+    }
+
   }
 
   Future<void> _fetchCurrentMonthWithStatusOrders() async {

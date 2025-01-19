@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:enlanados_app_mobile/routes/routes.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
+import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
+  tz.initializeTimeZones();
   runApp(
     MultiProvider(
       providers: [
@@ -17,13 +22,13 @@ void main() {
         ChangeNotifierProvider(create: (context) => ProductTypeController()),
         ChangeNotifierProvider(create: (context) => WoolStockController()),
       ],
-      child: MyApp(),
+      child: EnlanadosApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class EnlanadosApp extends StatelessWidget {
+  const EnlanadosApp({super.key});
 
   @override
   Widget build(BuildContext context) {

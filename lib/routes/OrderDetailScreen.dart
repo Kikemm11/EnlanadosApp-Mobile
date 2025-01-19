@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 
+import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
+
 class OrderDetailScreen extends StatefulWidget {
   const OrderDetailScreen({Key? key, required this.title}) : super(key: key);
 
@@ -463,6 +465,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           order.estimatedDate = estimatedDate == null ? order.estimatedDate : estimatedDate!;
                           String result = await OrderController().updateOrder(order);
 
+
                           if (result == 'Ok') {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -470,6 +473,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 backgroundColor: Colors.green,
                               ),
                             );
+
+                            if (estimatedDate != null){
+                              NotificationService.cancelNotification(order.id!);
+                              DateTime date = estimatedDate!.subtract(const Duration(days: 3));
+                              NotificationService.scheduleNotification(
+                                  order.id!,
+                                  "Hola, preciosa! 🧡 ",
+                                  "Recuerda que ya casi es la fecha de entregar el pedido de ${client}",
+                                  date);
+                            }
+
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -507,7 +521,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     if (picked != null) {
       setState(() {
         estimatedDateString = "${picked.day}-${picked.month}-${picked.year}";
-        estimatedDate = picked;
+        estimatedDate = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            DateTime.now().hour,
+            DateTime.now().minute,
+            DateTime.now().second);
       });
     }
   }

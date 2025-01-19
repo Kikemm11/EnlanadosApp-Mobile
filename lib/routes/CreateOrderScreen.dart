@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 
+import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
+
 class CreateOrderScreen extends StatefulWidget {
   const CreateOrderScreen({Key? key, required this.title}) : super(key: key);
 
@@ -289,11 +291,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                     credit: credit!,
                                     estimatedDate: estimatedDate!);
 
-                                setState(() async {
-                                  orderId = (await context
-                                      .read<OrderController>()
-                                      .insertOrder(order))!;
-                                });
+                                await _fetchOrderId(order);
 
                               }
 
@@ -460,6 +458,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                 backgroundColor: Colors.green,
                               ),
                             );
+                            //Schedule Notifications
+
+                            DateTime date = estimatedDate!.subtract(const Duration(days: 3));
+                            NotificationService.scheduleNotification(
+                                orderId,
+                                "Hola, preciosa! 🧡 ",
+                                "Recuerda que ya casi es la fecha de entregar el pedido de ${client}",
+                                date,
+                            );
+
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -493,7 +501,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     if (picked != null) {
       setState(() {
         estimatedDateString = "${picked.day}/${picked.month}/${picked.year}";
-        estimatedDate = picked;
+        estimatedDate = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            DateTime.now().hour,
+            DateTime.now().minute,
+            DateTime.now().second);
       });
     }
   }
@@ -813,6 +827,19 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
     // Return true if the user confirmed the deletion, false otherwise
     return shouldDelete ?? false;
+  }
+
+
+  Future<void> _fetchOrderId(Order order) async{
+
+    int id = (await context
+        .read<OrderController>()
+        .insertOrder(order))!;
+
+    setState(() {
+      orderId = id;
+    });
+
   }
 
   // Dialog to show item details
