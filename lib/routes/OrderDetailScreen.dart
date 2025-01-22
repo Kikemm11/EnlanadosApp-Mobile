@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Order Detail Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,6 +12,7 @@ import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 
 import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
+
 
 class OrderDetailScreen extends StatefulWidget {
   const OrderDetailScreen({Key? key, required this.title}) : super(key: key);
@@ -29,7 +37,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   int orderId = 0;
   bool fetch = true;
 
-  // Fetch products for initial state
+  // Fetch cities, payment methods, order items and products for initial state
   @override
   void initState() {
     super.initState();
@@ -64,11 +72,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     setState(() {});
   }
 
+
+  // Main Screen
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final Order order = args['order']!;
 
+    // Fetch bool flag to show theitem orders propperly
     if (fetch){
       setState(() {
         orderId = order.id!;
@@ -96,6 +107,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ),
         ),
+        // Order detail information (Readonly)
         body: SingleChildScrollView(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 25.0),
           child: Form(
@@ -103,6 +115,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Personal info
                 Row(
                   children: [
                     Expanded(
@@ -185,6 +198,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 20),
+                // Payment info
                 Row(
                   children: [
                     Expanded(
@@ -259,6 +273,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 20),
+                // Estimated date info
                 TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
@@ -284,6 +299,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 10),
+                // Order items info
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -435,6 +451,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       }),
                 ),
                 const SizedBox(height: 20),
+                // Order detail action button (Edit) / (Update)
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
@@ -511,6 +528,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
+
+  // Screen methods
+
+  // Date picker
   void _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -532,6 +553,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
   }
 
+  // Get the product type related to an item given its id
   Future<ProductType> _getItemProductType(BuildContext context,
       ProductTypeController value, int productTypeId) async {
     await context
@@ -540,6 +562,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return value.currentProductType!;
   }
 
+  // get the product type related to an item given its id
   Future<Product> _getProduct(BuildContext context,
       ProductController value, int productId) async {
     await context
@@ -549,8 +572,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
 
-  // Dialog create Order Item
 
+  // Dialog create Order Item
   void _showCreateOrderItemFormDialog(int currentOrderId) {
     int orderId = currentOrderId;
     int? productTypeId;
@@ -611,11 +634,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               int? parsedId = int.tryParse(value);
 
                               if (parsedId != null) {
-                                // Fetch the product type asynchronously
+                                // Fetch the product asynchronously
                                 Product? fetchedProduct = await _getProduct(context, values, parsedId);
 
                                 if (fetchedProduct != null) {
-                                  // Update the state after fetching the ProductType
+                                  // Update the state after fetching the Product
                                   setState(() {
                                     product = fetchedProduct;
                                     productType = null;
@@ -709,10 +732,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         labelText: 'Precio',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                      controller: _priceController, // Use the controller
-                      readOnly: true, // Since it's a read-only field
+                      controller: _priceController, 
+                      readOnly: true, 
                       onSaved: (value) {
-                        // You can save the value if needed
                       },
                     ),
                   ),
@@ -766,7 +788,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -819,7 +841,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
 
   // Dialog confirm delete Item
-
   Future<bool> _showDeleteConfirmationDialog() async {
     bool? shouldDelete = await showDialog<bool>(
       context: context,
@@ -849,8 +870,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return shouldDelete ?? false;
   }
 
-  // Dialog to show item details
 
+  // Dialog to show item details
   void _showItemDetailDialog(BuildContext context, Item item, ProductType productType) {
     showDialog(
       context: context,
@@ -891,7 +912,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16), // Adds space between rows
+              const SizedBox(height: 16), 
               Center(
                 child: Text(
                   'Descuento: ${item.discount} \$',
@@ -907,7 +928,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); 
               },
               child: const Text(
                 'Cerrar',
@@ -918,6 +939,4 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       },
     );
   }
-
-
 }

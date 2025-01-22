@@ -1,7 +1,15 @@
+/*
+This file contains the EnlanadosWoolStockSearch custom widget definition 
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:enlanados_app_mobile/models/WoolStock.dart';
 import 'package:enlanados_app_mobile/controllers/WoolStockController.dart';
 import 'package:provider/provider.dart';
+
 
 class EnlanadosWoolStockSearch extends SearchDelegate {
   final List<dynamic> data;
@@ -9,6 +17,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
 
   EnlanadosWoolStockSearch(this.data);
 
+  // Clear the text field for the query
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -21,6 +30,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
     ];
   }
 
+  // Close Search section
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
@@ -31,6 +41,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
     );
   }
 
+  // Render a simple view showing the results after user clicks on search icon
   @override
   Widget buildResults(BuildContext context) {
     final results = data.where((item) => item.color.toLowerCase().contains(query.toLowerCase())).toList();
@@ -45,6 +56,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
     );
   }
 
+  // Dynamically render the view for showing the filtered results in real time
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestions = data.where((item) => item.color.toLowerCase().contains(query.toLowerCase())).toList();
@@ -53,7 +65,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
     // Dialog edit WoolStock
 
     void _showEditWoolStockFormDialog(WoolStock woolStock) {
-      // Controllers for text fields
+     
       TextEditingController colorController = TextEditingController(text: woolStock.color);
 
       showDialog(
@@ -87,7 +99,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close the dialog
+                  Navigator.pop(context);
                 },
                 style: ButtonStyle(
                   overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -166,6 +178,9 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
       return shouldDelete ?? false;
     }
 
+    
+    // Main widget definition
+
     return Consumer<WoolStockController>(
       builder: (context, value, child){
         return Container(
@@ -181,7 +196,7 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
                   // Show confirmation dialog before dismissing
                   bool shouldDelete = await _showDeleteConfirmationDialog(woolStock);
 
-                  return shouldDelete; // Only dismiss the card if the user confirmed the deletion
+                  return shouldDelete; 
                 },
                 onDismissed: (direction) async {
                   String result = await context.read<WoolStockController>().deleteWoolStock(woolStock);
@@ -285,8 +300,5 @@ class EnlanadosWoolStockSearch extends SearchDelegate {
         );
       }
     );
-
-
   }
-
 }

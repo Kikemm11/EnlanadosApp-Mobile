@@ -1,3 +1,10 @@
+/*
+This file contains the Order model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'dart:convert';
 
 Order orderFromJson(String str) => Order.fromJson(json.decode(str));
@@ -25,6 +32,8 @@ class Order {
   }
   ): createdAt = createdAt ?? DateTime.now();
 
+
+  // Convertion methods
 
   factory Order.fromJson(Map<String, dynamic> json ) => Order(
       id: json["id"],

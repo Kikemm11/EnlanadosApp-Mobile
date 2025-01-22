@@ -1,3 +1,10 @@
+/*
+This file contains the City model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'dart:convert';
 
 City cityFromJson(String str) => City.fromJson(json.decode(str));
@@ -14,6 +21,8 @@ class City {
     required this.createdAt
   });
 
+
+  // Convertion methods
 
   factory City.fromJson(Map<String, dynamic> json ) => City(
       id: json["id"],

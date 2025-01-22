@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Home Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,8 +13,8 @@ import 'package:enlanados_app_mobile/controllers/controllers.dart';
 import 'package:enlanados_app_mobile/models/Order.dart';
 import 'package:enlanados_app_mobile/models/City.dart';
 
-
 import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.title}) : super(key: key);
@@ -18,16 +25,18 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = -1;
   bool _showHeart = false;
 
-  // Fetch current month with pending status orders for initial state
+  // Fetch current month orders with status 'Pendiente' for initial state
   @override
   void initState() {
     super.initState();
     _fetchCurrentMonthWithStatusOrders();
 
+    // Check for date to send instant notification
     DateTime now = DateTime.now();
 
     if ([18, 23, 4].contains(now.day)){
@@ -44,6 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+
+  // Main screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -85,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             )
           ],
-          centerTitle: false, // This ensures the title is aligned to the left
+          centerTitle: false, 
         ),
         body: Stack(
           children: [
@@ -110,11 +121,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                           child: Icon(
-                            Icons.warning, // Exclamation mark icon
+                            Icons.warning, 
                             color: Colors.orange[600],
-                            size: 50.0, // Adjust size as needed
+                            size: 50.0, 
                           ),
                         ),
+                        // List of current month orders with status 'Pendiente'
                         Expanded(
                           child: ListView.builder(
                             itemCount: value.ordersHome.length,
@@ -135,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   double orderTotalIncome = snapshot.data![0];
                                   City orderCity = snapshot.data![1];
 
+                                  // Order info card
                                   return Card(
                                     margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                                     elevation: 8.0,
@@ -250,6 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            // Hide message
             if (_showHeart)
                   Positioned.fill(
                     child: Container(
@@ -261,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Icon(
                               Icons.favorite,
                               color: Colors.deepOrangeAccent,
-                              size: 150.0, // Adjust size as needed
+                              size: 150.0, 
                             ),
                           ),
                           Text(
@@ -287,7 +301,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Screen methods
 
+  // Manage bottom navigation bar 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -315,6 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
+  // onLongPressed method for each order card
   void _showOrderActionBottomSheet(BuildContext context, Order order) {
     showModalBottomSheet(
       context: context,
@@ -331,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons horizontally
+                mainAxisAlignment: MainAxisAlignment.center, 
                 children: [
                   TextButton(
                     child: Text('Entregar'),
@@ -343,10 +360,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _fetchCurrentMonthWithStatusOrders();
                       });
                       Navigator.of(context).pop();
-                      // Add your delivery logic here
                     },
                   ),
-                  SizedBox(width: 10), // Optional: Add some space between buttons
+                  SizedBox(width: 10), 
                   TextButton(
                     child: Text('Cancelar'),
                     onPressed: () {
@@ -357,7 +373,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         _fetchCurrentMonthWithStatusOrders();
                       });
                       Navigator.of(context).pop();
-                      // Add your cancellation logic here
                     },
                   ),
                 ],
@@ -369,6 +384,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
+  // Enable hide content
   void showHeartOverlay() {
     setState(() {
       _showHeart = true;
@@ -380,6 +397,5 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
-
 
 }

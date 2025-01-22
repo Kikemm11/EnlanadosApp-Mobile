@@ -1,3 +1,10 @@
+/*
+This file contains the Item model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'dart:convert';
 
 Item itemFromJson(String str) => Item.fromJson(json.decode(str));
@@ -23,6 +30,8 @@ class Item {
   }
       ): createdAt = createdAt ?? DateTime.now();
 
+
+  // Convertion methods
 
   factory Item.fromJson(Map<String, dynamic> json ) => Item(
       id: json["id"],

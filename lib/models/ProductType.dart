@@ -1,3 +1,11 @@
+/*
+This file contains the ProductType model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
+
 import 'dart:convert';
 
 ProductType productTypeFromJson(String str) => ProductType.fromJson(json.decode(str));
@@ -18,6 +26,8 @@ class ProductType {
     DateTime? createdAt,
   }): createdAt = createdAt ?? DateTime.now();
 
+
+  // Convertion methods
 
   factory ProductType.fromJson(Map<String, dynamic> json ) => ProductType(
       id: json["id"],

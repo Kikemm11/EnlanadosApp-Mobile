@@ -1,13 +1,26 @@
+/*
+This file contains the definition of the NotificationService, its related logic 
+and some particular methods to be used within the application. 
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+
 class NotificationService {
+
+  // Main flutterNotificationPlugin instance
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
   static Future<void>  onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {}
 
+  // Initialization
   static Future<void> init() async {
     const AndroidInitializationSettings androidInitializationSettings  =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -69,10 +82,10 @@ static Future<void> scheduleNotification(int id, String title, String body, Date
 
 }
 
+  // Cancel notification by its id
+
   static Future<void> cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id);
   }
 
 }
-
-

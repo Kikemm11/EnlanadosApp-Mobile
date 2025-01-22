@@ -1,5 +1,10 @@
-// routes.dart - Barrel file
+/*
+This file contains the routes.dart - Barrel file
 
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+ */
+ 
 export 'HomeScreen.dart';
 export 'SplashScreen.dart';
 export 'OrderScreen.dart';

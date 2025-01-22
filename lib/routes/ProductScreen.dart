@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Product Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,10 +32,10 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchNotes();
+    _fetchProducts();
   }
 
-  Future<void> _fetchNotes() async {
+  Future<void> _fetchProducts() async {
     await context.read<ProductController>().getAllProducts();
     setState(() {
     });
@@ -40,8 +47,7 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
 
-  // Main widget
-
+  // Main Screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -66,6 +72,7 @@ class _ProductScreenState extends State<ProductScreen> {
               padding: const EdgeInsets.only(top: 10.0),
               child: Consumer<ProductController>(
                   builder: (context, value, child) {
+                    // List of products
                     return ListView.builder(
                       itemCount: value.products.length,
                       itemBuilder: (context, index) {
@@ -108,6 +115,8 @@ class _ProductScreenState extends State<ProductScreen> {
                               ),
                             ),
                           ),
+
+                          // Product info card
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                             elevation: 8.0,
@@ -157,6 +166,7 @@ class _ProductScreenState extends State<ProductScreen> {
               ),
             )
         ),
+        //Crerates new product
         floatingActionButton: FloatingActionButton(
           onPressed: _showCreateProductFormDialog,
           backgroundColor: Colors.orange[100],
@@ -171,8 +181,7 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
 
-  // Manage the bottom navbar navigation
-
+  // Manage the bottom navigation bar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -195,8 +204,8 @@ class _ProductScreenState extends State<ProductScreen> {
     }
   }
 
-  // Dialog create Product
 
+  // Dialog create Product
   void _showCreateProductFormDialog() {
 
     String name = '';
@@ -231,7 +240,7 @@ class _ProductScreenState extends State<ProductScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); 
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -283,9 +292,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
 
   // Dialog edit Product
-
   void _showEditProductFormDialog(Product product) {
-    // Controllers for text fields
     TextEditingController nameController = TextEditingController(text: product.name);
 
     showDialog(
@@ -319,7 +326,7 @@ class _ProductScreenState extends State<ProductScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); 
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -366,8 +373,8 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
-  // Dialog confirm delete Product
 
+  // Dialog confirm delete Product
   Future<bool> _showDeleteConfirmationDialog(Product product) async {
     String productName = product.name;
     bool? shouldDelete = await showDialog<bool>(
@@ -397,5 +404,4 @@ class _ProductScreenState extends State<ProductScreen> {
     // Return true if the user confirmed the deletion, false otherwise
     return shouldDelete ?? false;
   }
-
 }

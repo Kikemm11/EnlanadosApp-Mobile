@@ -1,3 +1,11 @@
+/*
+This file contains the WoolStock model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
+
 import 'dart:convert';
 
 WoolStock woolStockFromJson(String str) => WoolStock.fromJson(json.decode(str));
@@ -18,6 +26,8 @@ class WoolStock {
     DateTime? createdAt,
   }): createdAt = createdAt ?? DateTime.now(), lastUpdated = lastUpdated ?? DateTime.now();
 
+
+  // Convertion methods
 
   factory WoolStock.fromJson(Map<String, dynamic> json ) => WoolStock(
       id: json["id"],

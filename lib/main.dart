@@ -1,3 +1,11 @@
+/*
+This file contains the flutterbinding initialization, routes definition,
+providers definition and serves as the app entry point
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -6,6 +14,8 @@ import 'package:enlanados_app_mobile/routes/routes.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
 
+
+// Flutter Binding and  Multiprovider configuration
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
@@ -27,9 +37,11 @@ void main() async {
   );
 }
 
+// Main class
 class EnlanadosApp extends StatelessWidget {
   const EnlanadosApp({super.key});
 
+  // Routes definition and main config
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

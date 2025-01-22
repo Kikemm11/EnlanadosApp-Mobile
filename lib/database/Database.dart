@@ -1,3 +1,10 @@
+/*
+This file contains all the Database logic, conection and querys
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
@@ -707,11 +714,5 @@ class DBProvider {
         whereArgs: [item.id]
     );
   }
-
-
-
-
-
-
 
 }

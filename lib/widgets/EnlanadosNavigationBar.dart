@@ -1,3 +1,10 @@
+/*
+This file contains the enlanadosNavigationBar custom widget
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 
 class EnlanadosNavigationBar extends StatelessWidget {

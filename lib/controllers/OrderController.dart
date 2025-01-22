@@ -1,3 +1,10 @@
+/*
+This file contains the OrderController methods and main instances 
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/cupertino.dart';
 import 'package:enlanados_app_mobile/database/Database.dart';
 import 'package:enlanados_app_mobile/models/Order.dart';
@@ -11,6 +18,8 @@ class OrderController with ChangeNotifier {
   double _totalIncome = 0.0;
   Order? _currentOrder;
 
+
+  // Getters
   List<Order> get orders => _orders;
   List<Order> get ordersHome => _ordersHome;
   List<Order> get statisticOrders => _statisticOrders;
@@ -18,6 +27,8 @@ class OrderController with ChangeNotifier {
   double get totalIncome => _totalIncome;
   Order? get currentOrder => _currentOrder;
 
+
+  // Get all the current month orders with status 'Pendiente'
   Future<String> getCurrentMonthWhitStatusOrders() async {
     try {
       _ordersHome = await DBProvider.db.readCurrentMonthWhitStatusOrders();
@@ -28,6 +39,8 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+
+  // Get one order given its id
   Future<String> getOneOrder(Order order) async {
     try {
       _currentOrder = await DBProvider.db.readOneOrder(order);
@@ -38,6 +51,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Get all the current month orders
   Future<String> getCurrentMonthOrders() async {
     try {
       _orders = await DBProvider.db.readCurrentMonthOrders();
@@ -48,6 +62,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Get all the orders wich correspond to the applied filters
   Future<String> getFilteredOrders(Map<String, dynamic> filterData) async {
     try {
       _orders = await DBProvider.db.readFilteredOrders(filterData);
@@ -58,6 +73,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Get all the orders between the two selected dates and calculate its statistical info
   Future<String> getStatisticsOrders(Map<String, dynamic> dateData) async {
     double totalIncome = 0.0;
 
@@ -78,6 +94,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Set to default value the statistics value
   String cleanStatisticsData() {
     _statisticOrders = [];
     _totalIncome = 0.0;
@@ -86,6 +103,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Insert a new order
   Future<int?> insertOrder(Order order) async {
     try {
       Order newOrder = await DBProvider.db.insertOrder(order);
@@ -95,6 +113,7 @@ class OrderController with ChangeNotifier {
     }
   }
 
+  // Update an order given its id
   Future<String> updateOrder(Order order) async {
     try {
       await DBProvider.db.updateOrder(order);
@@ -104,6 +123,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Change the status of an order from 'Pendiente' to 'Entregado'
   Future<String> deliverOrder(Order order) async {
     try {
       await DBProvider.db.deliverOrder(order);
@@ -113,6 +133,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Change the status of an order from 'Pendiente' to 'Cancelado'
   Future<String> cancelOrder(Order order) async {
     try {
       await DBProvider.db.cancelOrder(order);
@@ -122,6 +143,7 @@ class OrderController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Delete an order (Not used for now)
   Future<String> deleteOrder(int orderId) async {
     try {
       await DBProvider.db.deleteOrder(orderId);

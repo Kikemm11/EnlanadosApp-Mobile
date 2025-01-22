@@ -1,9 +1,15 @@
+/*
+This file contains the definition and functionalities of ProductType Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:enlanados_app_mobile/models/ProductType.dart';
 import 'package:enlanados_app_mobile/controllers/ProductTypeController.dart';
-
 
 
 class ProductTypeScreen extends StatefulWidget {
@@ -19,10 +25,10 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
-  // Main widget
-
+  // Main Screen
   @override
   Widget build(BuildContext context) {
+    // Recieve prev Screen parameters
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final productId = args['productId']!;
     final productName = args['productName']!;
@@ -51,21 +57,23 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  // Parent product name
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
                       productName,
                       style: TextStyle(
-                        fontWeight: FontWeight.w400, // Increase font weight for better visibility
+                        fontWeight: FontWeight.w400, 
                         color: Colors.black,
-                        fontSize: 30.0, // Increase font size
+                        fontSize: 30.0, 
                       ),
                     ),
                   ),
-                  SizedBox(height: 30), // Space between the text and the list of cards
+                  SizedBox(height: 30), 
                   Consumer<ProductTypeController>(
                     builder: (context, value, child) {
                       return Expanded(
+                        // Product types list
                         child: ListView.builder(
                           itemCount: value.productProductTypes.length,
                           itemBuilder: (context, index) {
@@ -74,8 +82,9 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                               key: Key(productType.id.toString()),
                               direction: DismissDirection.endToStart,
                               confirmDismiss: (direction) async {
+                                // Show confirmation dialog before dismissing
                                 bool shouldDelete = await _showDeleteConfirmationDialog(productType);
-                                return shouldDelete;
+                                return shouldDelete;  // Only dismiss the card if the user confirmed the deletion
                               },
                               onDismissed: (direction) async {
                                 String result = await context.read<ProductTypeController>().deleteProductType(productType, productId);
@@ -106,6 +115,8 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
                                   ),
                                 ),
                               ),
+
+                              // Product type card info
                               child: Card(
                                 margin: EdgeInsets.only(right: 70.0, top: 6.0, bottom: 6.0, left: 70.0),
                                 elevation: 8.0,
@@ -142,6 +153,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
               ),
             ),
           ),
+        // Creates new product type
         floatingActionButton: FloatingActionButton(
           onPressed: (){
             _showCreateProductTypeFormDialog(productId);
@@ -154,8 +166,9 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
   }
 
 
-  // Dialog create ProductType
+  // Screen methods
 
+  // Dialog create ProductType
   void _showCreateProductTypeFormDialog(int productId) {
 
     String name = '';
@@ -207,7 +220,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -259,9 +272,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
 
 
   // Dialog edit Product Type
-
   void _showEditProductTypeFormDialog(ProductType productType, int productId) {
-    // Controllers for text fields
     TextEditingController nameController = TextEditingController(text: productType.name);
     TextEditingController priceController = TextEditingController(text: productType.price.toString());
 
@@ -313,7 +324,7 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); 
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -360,8 +371,8 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
     );
   }
 
-  // Dialog confirm delete Product Type
 
+  // Dialog confirm delete Product Type
   Future<bool> _showDeleteConfirmationDialog(ProductType productType) async {
     String productTypeName = productType.name;
     bool? shouldDelete = await showDialog<bool>(
@@ -391,5 +402,4 @@ class _ProductTypeScreenState extends State<ProductTypeScreen> {
     // Return true if the user confirmed the deletion, false otherwise
     return shouldDelete ?? false;
   }
-
 }

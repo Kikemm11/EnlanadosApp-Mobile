@@ -1,4 +1,10 @@
-// models.dart - Barrel file
+/*
+This file contains the models.dart - Barrel file
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+ */
+ 
 
 export 'City.dart';
 export 'Item.dart';

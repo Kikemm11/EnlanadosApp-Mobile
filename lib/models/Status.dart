@@ -1,3 +1,11 @@
+/*
+This file contains the Status model mapping the sqlite table
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
+
 import 'dart:convert';
 
 Status statusFromJson(String str) => Status.fromJson(json.decode(str));
@@ -14,6 +22,8 @@ class Status {
     required this.createdAt
   });
 
+
+  // Convertion methods
 
   factory Status.fromJson(Map<String, dynamic> json ) => Status(
       id: json["id"],

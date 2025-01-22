@@ -1,3 +1,10 @@
+/*
+This file contains the ItemController methods and main instances 
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:enlanados_app_mobile/database/Database.dart';
@@ -8,10 +15,13 @@ class ItemController with ChangeNotifier {
   List<Item> _items = [];
   Item? _currentItem;
 
-  List<Item> get items => _items;
 
+  // Getters
+  List<Item> get items => _items;
   Item? get currentItem => _currentItem;
 
+
+  // Get all the items related to an order given its id from the database
   Future<String> getOrderItems(int orderId) async {
     try {
       _items = await DBProvider.db.readOrderItems(orderId);
@@ -22,6 +32,9 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
 
+
+  // Get all the items related to an order given its id from 
+  //the database and return them as a list
   Future<List<Item>> getOrderItemsList(int orderId) async {
     try {
       _items = await DBProvider.db.readOrderItems(orderId);
@@ -32,6 +45,7 @@ class ItemController with ChangeNotifier {
     }
   }
 
+  // Get one item from the database given its id
   Future<String> getOneItem(Item item) async {
     try {
       _currentItem = await DBProvider.db.readOneItem(item);
@@ -42,6 +56,8 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
   
+  // Calculates the total amount of income from an order trought 
+  // all its related items taking in count its added price and discount
   Future<double> getOrderTotalIncome(Order order) async {
 
     try {
@@ -58,7 +74,7 @@ class ItemController with ChangeNotifier {
     }
   }
 
-
+  // Creates an item
   Future<String> insertItem(Item item) async {
     try {
       await DBProvider.db.insertItem(item);
@@ -68,6 +84,7 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Updates an item
   Future<String> updateItem(Item item) async {
     try {
       await DBProvider.db.updateItem(item);
@@ -77,6 +94,7 @@ class ItemController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Deletes an item
   Future<String> deleteItem(Item item, orderId) async {
     try {
       await DBProvider.db.deleteItem(item);

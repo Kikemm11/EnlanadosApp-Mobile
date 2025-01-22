@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of WoolStock Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:enlanados_app_mobile/widgets/EnlanadosWoolStockSearch.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:enlanados_app_mobile/widgets/widgets.dart';
 import 'package:enlanados_app_mobile/models/WoolStock.dart';
 import 'package:enlanados_app_mobile/controllers/WoolStockController.dart';
-
 
 
 class WoolStockScreen extends StatefulWidget {
@@ -21,22 +27,21 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
   int _selectedIndex = 2;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-// Fetch products for initial state
+// Fetch wools for initial state
   @override
   void initState() {
     super.initState();
-    _fetchNotes();
+    _fetchWoolStocks();
   }
 
-  Future<void> _fetchNotes() async {
+  Future<void> _fetchWoolStocks() async {
     await context.read<WoolStockController>().getAllWoolStocks();
     setState(() {
     });
   }
 
 
-  // Main widget
-
+  // Main screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -76,6 +81,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
               padding: const EdgeInsets.only(top: 10.0),
               child: Consumer<WoolStockController>(
                   builder: (context, value, child) {
+                    // Wools list
                     return ListView.builder(
                       itemCount: value.woolStock.length,
                       itemBuilder: (context, index) {
@@ -118,6 +124,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
                               ),
                             ),
                           ),
+                          // Wool Stock card info
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                             elevation: 8.0,
@@ -191,6 +198,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
               ),
             )
         ),
+        // Creates a new wool stock
         floatingActionButton: FloatingActionButton(
           onPressed: _showCreateWoolStockFormDialog,
           backgroundColor: Colors.orange[100],
@@ -205,8 +213,9 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
   }
 
 
-  // Manage the bottom navbar navigation
+  // Screen methods
 
+  // Manage the bottom navigation bar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -229,8 +238,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
     }
   }
 
-  // Dialog create wool stock
-
+  // Dialog create WoolStock
   void _showCreateWoolStockFormDialog() {
 
     String color = '';
@@ -282,7 +290,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); 
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -334,9 +342,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
 
 
   // Dialog edit WoolStock
-
   void _showEditWoolStockFormDialog(WoolStock woolStock) {
-    // Controllers for text fields
     TextEditingController colorController = TextEditingController(text: woolStock.color);
 
     showDialog(
@@ -370,7 +376,7 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -417,8 +423,8 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
     );
   }
 
-  // Dialog confirm delete Product
 
+  // Dialog confirm delete WoolStock
   Future<bool> _showDeleteConfirmationDialog(WoolStock woolStock) async {
     String woolStockColor = woolStock.color;
     bool? shouldDelete = await showDialog<bool>(
@@ -448,5 +454,4 @@ class _WoolStockScreenState extends State<WoolStockScreen> {
     // Return true if the user confirmed the deletion, false otherwise
     return shouldDelete ?? false;
   }
-
 }

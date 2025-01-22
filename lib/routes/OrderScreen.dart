@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Order Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:enlanados_app_mobile/models/City.dart';
 import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:enlanados_app_mobile/widgets/widgets.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 import 'package:enlanados_app_mobile/models/Order.dart';
+
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({Key? key, required this.title}) : super(key: key);
@@ -53,6 +61,8 @@ class _OrderScreenState extends State<OrderScreen> {
     setState(() {});
   }
 
+
+  //Main Screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -85,10 +95,12 @@ class _OrderScreenState extends State<OrderScreen> {
               padding: const EdgeInsets.only(top: 10.0),
               child: Consumer<OrderController>(
                   builder: (context, value, child) {
+                    // List of current month orders
                     return ListView.builder(
                       itemCount: value.orders.length,
                       itemBuilder: (context, index) {
                         Order order = value.orders[index];
+                        // Future builder to fetch the related data per order asynchronously
                         return FutureBuilder<List<dynamic>>(
                           future: Future.wait([
                             context.read<ItemController>().getOrderTotalIncome(order),
@@ -130,6 +142,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 break;
                             }
 
+                            // Order card info
                             return Card(
                               margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                               elevation: 8.0,
@@ -251,11 +264,12 @@ class _OrderScreenState extends State<OrderScreen> {
                           },
                         );
                       }
-                        );
+                    );
                   }
               ),
             )
         ),
+        // Creates new order
         floatingActionButton: FloatingActionButton(
           onPressed: (){
             Navigator.pushNamed(context, '/create-order').then((_){
@@ -276,6 +290,9 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
 
+  // Screen methods
+
+  // Manage bottom navigation bar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -299,6 +316,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
   
 
+  // Shows a bottom sheet in order to deliver or cancel orders
   void _showOrderActionBottomSheet(BuildContext context, Order order) {
     showModalBottomSheet(
       context: context,
@@ -315,7 +333,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons horizontally
+                mainAxisAlignment: MainAxisAlignment.center, 
                 children: [
                   TextButton(
                     child: Text('Entregar'),
@@ -327,10 +345,9 @@ class _OrderScreenState extends State<OrderScreen> {
                         _fetchCurrentMonthOrders();
                       });
                       Navigator.of(context).pop();
-                      // Add your delivery logic here
                     },
                   ),
-                  SizedBox(width: 10), // Optional: Add some space between buttons
+                  SizedBox(width: 10), 
                   TextButton(
                     child: Text('Cancelar'),
                     onPressed: () {
@@ -341,7 +358,6 @@ class _OrderScreenState extends State<OrderScreen> {
                         _fetchCurrentMonthOrders();
                       });
                       Navigator.of(context).pop();
-                      // Add your cancellation logic here
                     },
                   ),
                 ],
@@ -354,6 +370,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
 
+  // Filter form widget as bottom sheet modal
   void _showFilterForm(BuildContext context) {
     _fetchCities();
     _fetchCities();
@@ -388,7 +405,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-
+                // Personal info inputs
                 Row(
                   children: [
                     Expanded(
@@ -445,6 +462,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
                 Row(
                   children: [
+                    // Payment method info input
                     Expanded(
                       flex: 2,
                       child: Consumer<PaymentMethodController>(
@@ -479,6 +497,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                     SizedBox(width: 16.0),
+                    // Status info input
                     Expanded(
                       flex: 2,
                       child: Consumer<StatusController>(
@@ -510,13 +529,12 @@ class _OrderScreenState extends State<OrderScreen> {
                             },
                           );
                         }
-
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 16.0),
-
+                // From and To Date info inputs
                 Row(
                   children: [
                     Expanded(
@@ -587,7 +605,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 SizedBox(height: 16.0),
 
-                // Submit Button
+                // Filter Button
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -610,7 +628,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
 
-
+  // Filter orders and updates _orders list with the query result
   _filterOrders(BuildContext context) async {
 
     if ((filterData["fromDate"] != null && filterData["toDate"] == null) || (filterData["fromDate"] == null && filterData["toDate"] != null) ){
@@ -625,5 +643,4 @@ class _OrderScreenState extends State<OrderScreen> {
      await  context.read<OrderController>().getFilteredOrders(Map.from(filterData));
     }
   }
-
 }

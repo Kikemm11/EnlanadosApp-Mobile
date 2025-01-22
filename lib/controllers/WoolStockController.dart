@@ -1,3 +1,10 @@
+/*
+This file contains the WoolStockController methods and main instances 
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/cupertino.dart';
 import 'package:enlanados_app_mobile/database/Database.dart';
 import 'package:enlanados_app_mobile/models/WoolStock.dart';
@@ -6,10 +13,13 @@ class WoolStockController with ChangeNotifier {
   List<WoolStock> _woolStock = [];
   WoolStock? _currentWoolStock;
 
-  List<WoolStock> get woolStock => _woolStock;
 
+  // Getters
+  List<WoolStock> get woolStock => _woolStock;
   WoolStock? get currentWoolStock => _currentWoolStock;
 
+
+  // Get all the wools 
   Future<String> getAllWoolStocks() async {
     try {
       _woolStock = await DBProvider.db.readAllWoolStock();
@@ -20,6 +30,7 @@ class WoolStockController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Get one wool given its id
   Future<String> getOneWoolStock(WoolStock woolStock) async {
     try {
       _currentWoolStock = await DBProvider.db.readOneWoolStock(woolStock);
@@ -30,6 +41,7 @@ class WoolStockController with ChangeNotifier {
     return 'Ok';
   }
 
+  // Insert a wool
   Future<String> insertWoolStock(WoolStock woolStock) async {
     try {
       await DBProvider.db.insertWoolStock(woolStock);
@@ -43,6 +55,7 @@ class WoolStockController with ChangeNotifier {
     return await getAllWoolStocks();
   }
 
+  // Update a wool given its id
   Future<String> updateWoolStock(WoolStock woolStock) async {
     try {
       await DBProvider.db.updateWoolStock(woolStock);
@@ -52,6 +65,7 @@ class WoolStockController with ChangeNotifier {
     return await getAllWoolStocks();
   }
 
+  // Increment the quantity of a particular wool by one
   Future<String> incrementWoolStock(WoolStock woolStock) async {
     try {
       woolStock.quantity += 1;
@@ -63,6 +77,7 @@ class WoolStockController with ChangeNotifier {
     return await getAllWoolStocks();
   }
 
+  // Decrement the quantity of a particular wool by one avoiding negatives
   Future<String> decrementWoolStock(WoolStock woolStock) async {
     try {
       woolStock.quantity = woolStock.quantity - 1 < 0 ? 0 : woolStock.quantity - 1;
@@ -74,6 +89,7 @@ class WoolStockController with ChangeNotifier {
     return await getAllWoolStocks();
   }
 
+  // Delete a wool given its id
   Future<String> deleteWoolStock(WoolStock woolStock) async {
     try {
       await DBProvider.db.deleteWoolStock(woolStock);

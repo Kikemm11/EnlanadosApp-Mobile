@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Create order screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,6 +12,7 @@ import 'package:enlanados_app_mobile/models/models.dart';
 import 'package:enlanados_app_mobile/controllers/controllers.dart';
 
 import 'package:enlanados_app_mobile/notifications/NotificationService.dart';
+
 
 class CreateOrderScreen extends StatefulWidget {
   const CreateOrderScreen({Key? key, required this.title}) : super(key: key);
@@ -27,7 +35,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   int orderId = 0;
 
-  // Fetch products for initial state
+  // Fetch cities, payment methods, order items (Empty) and products for initial state
   @override
   void initState() {
     super.initState();
@@ -62,6 +70,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     setState(() {});
   }
 
+
+  // Main Screen 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -85,6 +95,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             ),
           ),
         ),
+        // Order form and items container space
         body: SingleChildScrollView(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 25.0),
           child: Form(
@@ -92,6 +103,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Personal info
                 Row(
                   children: [
                     Expanded(
@@ -170,6 +182,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 20),
                 Row(
+                  // Payment info
                   children: [
                     Expanded(
                       flex: 2,
@@ -239,6 +252,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 20),
+                // Estimated date info
                 TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
@@ -264,6 +278,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 const SizedBox(height: 20),
                 Divider(color: Colors.orange[600], thickness: 1.0),
                 const SizedBox(height: 10),
+                // Items section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -283,6 +298,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
 
+                              // Creates an order if needed 
                               if (orderId == 0){
                                 Order order = Order(
                                     client: client!,
@@ -313,6 +329,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
+                // List of order items 
                 Container(
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -426,6 +443,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       }),
                 ),
                 const SizedBox(height: 20),
+                // Form action buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -458,8 +476,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            //Schedule Notifications
 
+                            //Schedule Notifications
                             DateTime date = estimatedDate!.subtract(const Duration(days: 3));
                             NotificationService.scheduleNotification(
                                 orderId,
@@ -491,6 +509,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
+
+  // Screen methods
+
+
+  // Date picker method
   void _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -512,6 +535,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     }
   }
 
+  // Get the product type related to an item
   Future<ProductType> _getItemProductType(BuildContext context,
       ProductTypeController value, int productTypeId) async {
     await context
@@ -520,6 +544,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     return value.currentProductType!;
   }
 
+  // Get the product related to an item
   Future<Product> _getProduct(BuildContext context,
       ProductController value, int productId) async {
     await context
@@ -530,7 +555,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
 
   // Dialog create Order Item
-
   void _showCreateOrderItemFormDialog(int currentOrderId) {
     int orderId = currentOrderId;
     int? productTypeId;
@@ -591,11 +615,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               int? parsedId = int.tryParse(value);
 
                               if (parsedId != null) {
-                                // Fetch the product type asynchronously
+                                // Fetch the product asynchronously
                                 Product? fetchedProduct = await _getProduct(context, values, parsedId);
 
                                 if (fetchedProduct != null) {
-                                  // Update the state after fetching the ProductType
+                                  // Update the state after fetching the Product
                                   setState(() {
                                     product = fetchedProduct;
                                     productType = null;
@@ -689,10 +713,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         labelText: 'Precio',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                      controller: _priceController, // Use the controller
-                      readOnly: true, // Since it's a read-only field
+                      controller: _priceController, 
+                      readOnly: true, 
                       onSaved: (value) {
-                        // You can save the value if needed
                       },
                     ),
                   ),
@@ -746,7 +769,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context); 
               },
               style: ButtonStyle(
                 overlayColor: WidgetStatePropertyAll(Colors.red),
@@ -799,7 +822,6 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
 
   // Dialog confirm delete Item
-
   Future<bool> _showDeleteConfirmationDialog() async {
     bool? shouldDelete = await showDialog<bool>(
       context: context,
@@ -842,8 +864,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   }
 
-  // Dialog to show item details
 
+  // Dialog to show item details
   void _showItemDetailDialog(BuildContext context, Item item, ProductType productType) {
     showDialog(
       context: context,
@@ -884,7 +906,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16), // Adds space between rows
+              const SizedBox(height: 16), 
               Center(
                 child: Text(
                   'Descuento: ${item.discount} \$',
@@ -900,7 +922,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); 
               },
               child: const Text(
                 'Cerrar',
@@ -911,6 +933,4 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       },
     );
   }
-
-
 }

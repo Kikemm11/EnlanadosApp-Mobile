@@ -1,3 +1,10 @@
+/*
+This file contains the definition and functionalities of Statistics Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +16,7 @@ import 'package:enlanados_app_mobile/models/Order.dart';
 import 'package:enlanados_app_mobile/models/City.dart';
 import 'package:enlanados_app_mobile/models/Item.dart';
 import 'package:enlanados_app_mobile/models/ProductType.dart';
+
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({Key? key, required this.title}) : super(key: key);
@@ -27,6 +35,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   TextEditingController fromDateController = TextEditingController(text: '');
   TextEditingController toDateController = TextEditingController(text: '');
 
+  // Main screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -154,7 +163,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   thickness: 1.0,
                 ),
               ),
-              // Text Row
+              // Income info 
               Consumer<OrderController>(
                 builder: (context, value, index){
                   return Row(
@@ -194,7 +203,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         // Synchronous Widget
                         _buildPaymentMethodPieChart(value.statisticOrders),
 
-                        // Asynchronous Widget with FutureBuilder
+                        // Asynchronous Widgets with FutureBuilder
                         FutureBuilder<Widget>(
                           future: _buildCityPieChart(value.statisticOrders),
                           builder: (context, snapshot) {
@@ -238,7 +247,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
+  // Screen methods
 
+  // Manage bottom navigation var
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -262,6 +273,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
   }
 
+  // Validates correct dates and get the order statistics and its related income info
   Future<void> _onSearch(BuildContext context) async {
     if (dateData["fromDate"] == null || dateData["toDate"] == null ){
       ScaffoldMessenger.of(context).showSnackBar(
@@ -285,8 +297,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
 
+  // Build first pie chart
   Widget _buildPaymentMethodPieChart(List<Order> orderStatistics) {
-    // Initialize usage counts for each payment method
     int transferenceCount = 0;
     int cashCount = 0;
 
@@ -351,10 +363,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
 
+  // Build second pie chart
   Future<Widget> _buildCityPieChart(List<Order> orderStatistics) async {
-
     Map<String, int> cityData = {};
+    List<PieChartSectionData> sections = [];
 
+    // Get the count per each available city in orderStatistics
     for (Order order in orderStatistics) {
       City city = (await CityController().getOneCity(order.cityId))!;
 
@@ -365,12 +379,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       );
     }
 
-
     int totalUsage = cityData.values.fold(0, (sum, value) => sum + value);
     if (totalUsage == 0) totalUsage = 1;
 
-    List<PieChartSectionData> sections = [];
-
+    
+    // Create sections for the PieChart 
     cityData.forEach((cityName, count) {
       double percentage = (count / totalUsage) * 100;
 
@@ -402,10 +415,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
 
+  // Build third chart 
   Future<Widget> _buildProductTypeBarChart(List<Order> orderStatistics) async {
-
     Map<String, int> productTypeData = {};
 
+    // Gets the count of each product type related to all the order items per each order in 
+    // orderStatistics
     for (Order order in orderStatistics) {
       List<Item> items = await ItemController().getOrderItemsList(order.id!);
       for (Item item in items) {
@@ -418,6 +433,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       }
     }
 
+    // Return the BarchartData
     return Padding(
       padding: EdgeInsets.only(top: 20.0, right: 10.0),
       child: BarChart(
@@ -475,7 +491,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
 
-
+  // Generate the bar grous info per each product type 
   List<BarChartGroupData> _generateBarChartGroups(Map<String, int> productTypeData) {
     List<BarChartGroupData> barGroups = [];
 
@@ -495,21 +511,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         ),
       );
     });
-
     return barGroups;
   }
 
 
+  // Utility method to select a random color for the charts UI
   Color getRandomColor() {
     final Random random = Random();
     return Color.fromARGB(
-      255, // Full opacity
+      255, 
       random.nextInt(256), // Red (0-255)
       random.nextInt(256), // Green (0-255)
       random.nextInt(256), // Blue (0-255)
     );
   }
-
-
-
 }

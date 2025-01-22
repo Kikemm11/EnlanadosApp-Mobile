@@ -1,5 +1,13 @@
+/*
+This file contains the definition and animation for the Splash Screen
+
+- Author: Iván Maldonado (Kikemaldonado11@gmail.com)
+- Develop at: January 2025
+*/
+
 import 'package:flutter/material.dart';
 import 'dart:async';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -31,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
+  // Dispose the used controller
   @override
   void dispose() {
     _controller.dispose();
@@ -47,19 +56,19 @@ class _SplashScreenState extends State<SplashScreen>
             child: ScaleTransition(
               scale: _animation,
               child: Image.asset(
-                'lib/assets/logo.png', // Place your logo image in assets
+                'lib/assets/logo.png', 
                 width: 180,
                 height: 180,
               ),
             ),
           ),
-          // Column with both texts at the bottom
+          // Powered by info
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                mainAxisSize: MainAxisSize.min,  // This makes the column take only as much height as needed
+                mainAxisSize: MainAxisSize.min,  
                 children: const [
                   Text(
                     'POWERED BY',
@@ -69,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 10), // Space between the two texts
+                  SizedBox(height: 10), 
                   Text(
                     'Tu amorcito 🧡',
                     style: TextStyle(
@@ -85,6 +94,5 @@ class _SplashScreenState extends State<SplashScreen>
         ],
       ),
     );
-
   }
 }
